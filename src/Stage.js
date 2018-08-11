@@ -31,9 +31,9 @@ class Stage {
             this.targetCellSize = this.targetFieldSize / Math.sqrt(2) / width;
         }
         
-        var lrs = Array();
+        this.lrs = Array();
         for (var i = 0; i < this.cellsRowsCount * 3; ++i) {
-            lrs.push(new LayerGroup(i * 4))
+            this.lrs.push(new LayerGroup(i * 4))
         }
 
         for (var row = 0; row < height; ++row) {
@@ -44,12 +44,16 @@ class Stage {
                 app.stage.addChild(land1);
 
                 var index = this.getIndex(row, column);
-                this.cells[index] = new Cell(row, column, land1, lrs[7 + row - column]);
+                this.cells[index] = new Cell(row, column, land1, this.getLayers(row, column));
                 this.cells[index].setPosition(this.getCellXPosition(row, column),
                                               this.getCellYPosition(row, column));
                 this.cells[index].setSize(this.targetCellSize);
             }
         }
+    }
+
+    getLayers(row, column) {
+        return this.lrs[this.cellsRowsCount + this.cellsColumnsCount + row - column];
     }
 
     setupLayers() {

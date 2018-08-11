@@ -11,8 +11,8 @@ var Action = Object.freeze({
     "Jump": 3, 
 })
 
-var FieldWidth = 4;
-var FieldHeight = 4;
+var FieldWidth = 3;
+var FieldHeight = 3;
 
 class State {
     constructor() {
@@ -30,26 +30,32 @@ class State {
 
         this.mouseOverCell = undefined;
         this.selectedCell = undefined;
+
+        this.GameObjects = new Array();
     }
 
     init() {
         this.setupPayingField();
         this.moveOverlay.init();
         this.attackOverlay.init();
+        this.setupObjects();
+        this.initUi();
+    }
 
+    setupObjects() {
         var playerSprite1 = PIXI.Sprite.fromImage('player')
         playerSprite1.anchor.set(0.5, 0.7);
         app.stage.addChild(playerSprite1);
         var playerObject1 = new GameObject(playerSprite1, GameObjectType.Player);
         playerObject1.setCell(0, 0);
+        this.GameObjects.push(playerObject1);
 
         var playerSprite2 = PIXI.Sprite.fromImage('player')
         playerSprite2.anchor.set(0.5, 0.7);
         app.stage.addChild(playerSprite2);
         var playerObject2 = new GameObject(playerSprite2, GameObjectType.AI);
         playerObject2.setCell(2, 2);
-
-        this.initUi();
+        this.GameObjects.push(playerObject2);
     }
 
     initUi() {
@@ -97,6 +103,9 @@ class State {
     }
 
     update(dt) {
+        this.GameObjects.forEach(o => {
+            o.update(dt);
+        });
         this.stage.update(dt);
         if (this.selectedCell) {
             if (this.actionMode != Action.None) {
@@ -213,7 +222,10 @@ class State {
                     if (newCell && newCell.state == CellState.Ok) {
                         cell.layers[2].setCell(newRow, newColumn);
                     } else {
-                        this.onCellDropped(cell);
+                        var layers = this.stage.getLayers(newRow, newColumn);
+                        cell.layers[2].graphics.parentGroup = layers.layerPlayer;
+                        cell.layers[2].setFalling(this.stage.getCellXPosition(newRow, newColumn), 
+                                                  this.stage.getCellYPosition(newRow, newColumn));
                     }
                 break;
                 case GameObjectType.Building:

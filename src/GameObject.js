@@ -10,6 +10,12 @@ class GameObject {
         this.graphics = graphics;
         this.type = type;
         this.currentCell = undefined;
+
+        this.falling = false;
+        this.fallV = 0.0;
+        this.fallA = 1000.0;
+        this.fallingTime = 0.0;
+        this.fallingTimeMax = 2.0;
     }
 
     setCell(row, column) {
@@ -18,12 +24,31 @@ class GameObject {
         this.currentCell.show(this, 2);
     }
 
+    setFalling(x, y) {
+        this.unmanage(false);
+        this.graphics.x = x;
+        this.graphics.y = y;
+        this.falling = true;
+    }
+
     unmanage(remove) {
         if (this.currentCell) {
             this.currentCell.unmanage(2);
         }
         if (remove) {
             app.stage.removeChild(this.graphics);
+        }
+    }
+
+    update(dt) {
+        if (this.falling) {
+            this.fallV += this.fallA * dt;
+            this.graphics.y += this.fallV * dt;
+            this.fallingTime += dt;
+            if (this.fallingTime > this.fallingTimeMax) {
+                state.onCellDropped(this.currentCell);
+                this.falling = false;
+            }
         }
     }
 }
