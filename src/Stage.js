@@ -31,8 +31,12 @@ class Stage {
             this.targetCellSize = this.targetFieldSize / Math.sqrt(2) / width;
         }
         
+        var lrs = Array();
+        for (var i = 0; i < this.cellsRowsCount * 2; ++i) {
+            lrs.push(new LayerGroup(i * 4))
+        }
+
         for (var row = 0; row < height; ++row) {
-            var layers = new LayerGroup(row * 4);
             for (var column = 0; column < width; ++column) {
                 var land1 = PIXI.Sprite.fromImage('land1')
                 land1.anchor.set(0.5);
@@ -40,7 +44,7 @@ class Stage {
                 app.stage.addChild(land1);
 
                 var index = this.getIndex(row, column);
-                this.cells[index] = new Cell(row, column, land1, layers);
+                this.cells[index] = new Cell(row, column, land1, lrs[7 + row - column]);
                 this.cells[index].setPosition(this.getCellXPosition(row, column),
                                               this.getCellYPosition(row, column));
                 this.cells[index].setSize(this.targetCellSize);

@@ -183,7 +183,8 @@ class State {
             } else if (action == Action.Jump) {
                 this.selectedCell.layers[2].setCell(cell.row, cell.column);
             } else if (action == Action.Fire) {
-            console.log("Fire at " + cell.row + " " + cell.column);
+                cell.state = CellState.Falling;
+                console.log("Fire at " + cell.row + " " + cell.column);
             }
         } else {
             console.log("Player not selected -> unexpected")
@@ -197,7 +198,7 @@ class State {
     
     onCellOver(/** @type {Cell} */ cell) {
         this.currentCell = cell;
-        //console.log("over " + cell.row + "; " + cell.column)
+        console.log("over " + cell.row + "; " + cell.column)
     }
 
     onCellOut(/** @type {Cell} */ cell) {
