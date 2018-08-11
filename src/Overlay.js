@@ -5,15 +5,36 @@ var OverlayType = Object.freeze({
 })
 
 /*
--1 - center
-1 - green
+-1 - center of action
+ 1 - movable
+ 2 - attack
+ 3 - push left
+ 4 - push up
+ 5 - push right
+ 6 - push down
 */
 
 var movePattern = [
     [1, 1, 1],
     [1, -1, 1],
     [1, 1, 1],
-]
+];
+
+var attackPattern = [
+    [2],
+];
+var jumpPattern = [
+    [0, 4, 0],
+    [3, -1, 5],
+    [0, 6, 0],
+];
+var attackMovePattern = [
+    [1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1],
+    [1, 1, -1, 1, 1],
+    [1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1],
+];
 
 class Overlay {
     constructor(type) {
@@ -26,10 +47,12 @@ class Overlay {
 
     drawOverlay(/** @type {Cell} */ target, pattern) {
         this.hideOverlay();
-
+        if (!target) {
+            return;
+        }
         // Find center
-        var centerX = undefined;
-        var centerY = undefined;
+        var centerX = 0;
+        var centerY = 0;
         for (var patternRow = 0; patternRow < pattern.length; ++patternRow) {
             for (var patternColumn = 0; patternColumn < pattern.length; ++patternColumn) {
                 if (pattern[patternRow][patternColumn] == -1) {
@@ -48,8 +71,14 @@ class Overlay {
             for(var patternColumn = 0; patternColumn < pattern.length; ++patternColumn) {
                 var sprite = undefined;
                 switch(pattern[pattern.length - patternRow - 1][patternColumn]) {
+                    case 0:
+                    break;
                     case 1:
                     sprite = PIXI.Sprite.fromImage('overlay_base')
+                    sprite.anchor.set(0.5);
+                    break;
+                    default:
+                    sprite = PIXI.Sprite.fromImage('overlay_attack')
                     sprite.anchor.set(0.5);
                     break;
                 }
@@ -85,12 +114,12 @@ class Overlay {
     }
 
     apply(/** @type {Cell} */ target, click, pattern) {
-        if (this.sprites.length == 0) {
+        if (this.sprites.length == 0 && !target) {
             return;
         }
         // Find center
-        var centerX = undefined;
-        var centerY = undefined;
+        var centerX = 0;
+        var centerY = 0;
         for (var patternRow = 0; patternRow < pattern.length; ++patternRow) {
             for (var patternColumn = 0; patternColumn < pattern.length; ++patternColumn) {
                 if (pattern[patternRow][patternColumn] == -1) {

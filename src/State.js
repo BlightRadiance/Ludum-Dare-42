@@ -5,6 +5,12 @@ var GameStates = Object.freeze({
     "Gameover": 3, 
 })
 
+var Action = Object.freeze({
+    "None": 1,
+    "Fire": 2, 
+    "Jump": 3, 
+})
+
 var FieldWidth = 8;
 var FieldHeight = 8;
 
@@ -17,7 +23,10 @@ class State {
         this.moveOverlay = new Overlay(OverlayType.Move);
         this.movePattern = undefined;
 
+        this.actionMode = Action.None;
         this.attackOverlay = new Overlay(OverlayType.Attack);
+        this.attackPattern = undefined;
+        this.attackMovePattern = attackMovePattern;
 
         this.mouseOverCell = undefined;
         this.selectedCell = undefined;
@@ -37,14 +46,63 @@ class State {
         var playerSprite2 = PIXI.Sprite.fromImage('player')
         playerSprite2.anchor.set(0.5, 0.7);
         app.stage.addChild(playerSprite2);
-        var playerObject2 = new GameObject(playerSprite2, GameObjectType.Player);
+        var playerObject2 = new GameObject(playerSprite2, GameObjectType.AI);
         playerObject2.setCell(2, 2);
+
+        this.initUi();
+    }
+
+    initUi() {
+        var self = this;
+        var action1Sprite = PIXI.Sprite.fromImage('overlay_base')
+        action1Sprite.anchor.set(0.5);
+        app.stage.addChild(action1Sprite);
+        action1Sprite.interactive = true;
+        action1Sprite.x = game.camera.targetScreenSize / 2.0 - action1Sprite.width / 2.0;
+        action1Sprite.y = game.camera.targetScreenSize / 2.0 - action1Sprite.height / 2.0;
+        action1Sprite.on('pointerup', () => {
+            self.onAction(Action.Jump);
+        });
+
+        var action2Sprite = PIXI.Sprite.fromImage('overlay_base')
+        action2Sprite.anchor.set(0.5);
+        app.stage.addChild(action2Sprite);
+        action2Sprite.interactive = true;
+        action2Sprite.x = -game.camera.targetScreenSize / 2.0 + action1Sprite.width / 2.0;
+        action2Sprite.y = game.camera.targetScreenSize / 2.0 - action1Sprite.height / 2.0;
+        action2Sprite.on('pointerup', () => {
+            self.onAction(Action.Fire);
+        });
+    }
+
+    onAction(action) {
+        if (!this.selectedCell) {
+            return;
+        }
+        if (this.actionMode == action) {
+            this.actionMode = Action.None;
+        } else {
+            this.actionMode = action;
+            switch(action) {
+                case Action.Fire:
+                    this.attackPattern = attackPattern;
+                break;
+                case Action.Jump:
+                    this.attackPattern = jumpPattern;
+                break;
+            }
+        }
     }
 
     update(dt) {
         this.stage.update(dt);
         if (this.selectedCell) {
-            this.moveOverlay.drawOverlay(this.selectedCell, movePattern);
+            if (this.actionMode != Action.None) {
+                this.moveOverlay.drawOverlay(this.selectedCell, this.attackMovePattern);
+                this.attackOverlay.drawOverlay(this.currentCell, this.attackPattern);
+            } else {
+                this.moveOverlay.drawOverlay(this.selectedCell, movePattern);
+            }
         } else {
             this.moveOverlay.hideOverlay();
         }
@@ -59,6 +117,24 @@ class State {
     }
 
     onCellDown(/** @type {Cell} */ cell) {
+        switch (this.actionMode) {
+            case Action.None:
+                this.tryToMove(cell);
+            break;
+            case Action.Fire:
+            case Action.Jump:
+                // Try to apply attack pattern
+                this.attackOverlay.apply(cell, cell, this.movePattern);
+            break;
+        }
+
+        //this.overlay.apply(this.selectedCell, movePattern);
+        //app.stage.removeChildren();
+        //this.stage.setupPayingField(FieldWidth + 1, FieldHeight + 1);
+        //console.log("down " + cell.row + "; " + cell.column)
+    }
+
+    tryToMove(/** @type {Cell} */ cell) {
         if (cell.layers[2]) {
             if (this.selectedCell) {
                 switch (cell.layers[2].type) {
@@ -66,10 +142,6 @@ class State {
                         // Switch to other unit
                         this.selectedCell = cell;
                     return;
-                    default:
-                        // Some entity, try to apply attack pattern
-                        this.attackOverlay.apply(this.selectedCell, cell, this.movePattern);
-                    break;
                 }
             } else {
                 switch (cell.layers[2].type) {
@@ -87,10 +159,6 @@ class State {
                 this.selectedCell = undefined;
             }
         }
-        //this.overlay.apply(this.selectedCell, movePattern);
-        //app.stage.removeChildren();
-        //this.stage.setupPayingField(FieldWidth + 1, FieldHeight + 1);
-        //console.log("down " + cell.row + "; " + cell.column)
     }
 
     applyPattern(/** @type {Cell} */ cell, command) {
