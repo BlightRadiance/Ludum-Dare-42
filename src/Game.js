@@ -62,6 +62,7 @@ class Game extends DragonBonesBase {
     preloadOtherResources() {
         PIXI.loader.add('land1', "resource/land.png");
         PIXI.loader.add('player', "resource/player.png");
+        PIXI.loader.add('overlay_base', "resource/overlay_base.png");
     }
 
     resize() {
@@ -76,17 +77,13 @@ class Game extends DragonBonesBase {
     }
 
     onLoaded() {
-        this.setupPayingField();
+        state.init();
 
         PIXI.ticker.shared.add((dt) => {
             time += dt;
             this.update(dt);
         });
     };
-
-    setupPayingField() {
-        state.setupPayingField();
-    }
 
     update(dt) {
 

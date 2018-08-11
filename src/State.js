@@ -13,6 +13,13 @@ class State {
         this.paused = false;
         this.state = GameStates.Play;
         this.stage = new Stage();
+        this.overlay = new Overlay();
+        this.currentCell = undefined;
+    }
+
+    init() {
+        this.setupPayingField();
+        this.overlay.init();
     }
     
     setupPayingField() {
@@ -28,10 +35,14 @@ class State {
     }
     
     onCellOver(/** @type {Cell} */ cell) {
+        this.currentCell = cell;
+        this.overlay.onCellOver();
         //console.log("over " + cell.row + "; " + cell.column)
     }
 
     onCellOut(/** @type {Cell} */ cell) {
+        this.currentCell = undefined;
+        this.overlay.onCellOut();
         //console.log("out " + cell.row + "; " + cell.column)
     }
 }

@@ -21,12 +21,16 @@ class Stage {
                 land1.anchor.set(0.5);
                 app.stage.addChild(land1);
 
-                var cell = this.cells[row * width + column];
+                var cell = this.cells[this.getIndex(row, column)];
                 cell = new Cell(column, row, land1);
                 cell.setPosition(this.getCellXPosition(column), this.getCellYPosition(row));
                 cell.setSize(this.targetCellSize);
             }
         }
+    }
+
+    getIndex(row, column) {
+        return row * this.cellsColumnsCount + column;
     }
 
     getCellXPosition(column) {

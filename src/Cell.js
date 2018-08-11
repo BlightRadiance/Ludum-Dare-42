@@ -7,7 +7,7 @@ class Cell {
         this.layers[0] = sprite;
         this.currentX = 0.0;
         this.currentY = 0.0;
-        this.targetSize = 124;
+        this.targetSize = 1024;
         sprite.interactive = true;
         sprite.parentGroup = game.layerStage;
 
@@ -31,8 +31,8 @@ class Cell {
         for (var i = 0; i < this.layers.length; ++i) {
             var element = this.layers[i];
             if (element) {
-                element.scale.x = size / element.width;
-                element.scale.y = size / element.height;
+                element.scale.x = size / element.texture.width;
+                element.scale.y = size / element.texture.height;
             }
         }
     }
@@ -52,12 +52,16 @@ class Cell {
     showHelp(sprite) {
         sprite.x = this.currentX;
         sprite.y = this.currentY;
+        sprite.scale.x = this.targetSize / sprite.texture.width;
+        sprite.scale.y = this.targetSize / sprite.texture.height;
         sprite.parentGroup = game.layerHelp;
     }
 
     showPlayer(player) {
         player.x = this.currentX;
         player.y = this.currentY;
+        player.scale.x = this.targetSize / player.texture.width;
+        player.scale.y = this.targetSize / player.texture.height;
         player.parentGroup = game.layerPlayer;
     }
 }
