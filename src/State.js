@@ -11,8 +11,8 @@ var Action = Object.freeze({
     "Jump": 3, 
 })
 
-var FieldWidth = 3;
-var FieldHeight = 3;
+var FieldWidth = 5;
+var FieldHeight = 5;
 
 class State {
     constructor() {
@@ -195,13 +195,26 @@ class State {
             } else if (action == Action.Jump) {
                 this.jump(cell);
             } else if (action == Action.Fire) {
-                cell.state = CellState.Falling;
-                console.log("Fire at " + cell.row + " " + cell.column);
+                this.fire(cell);
             }
         } else {
             console.log("Player not selected -> unexpected")
         }
         this.selectedCell = undefined;
+    }
+
+    fire(/** @type {Cell} */ cell) {
+        var dirX = cell.column - this.selectedCell.column;
+        var dirY = cell.row - this.selectedCell.row;
+        if (Math.abs(dirY) > Math.abs(dirX)) {
+            dirY /= Math.abs(dirY);
+            dirX = 0;
+        } else {
+            dirX /= Math.abs(dirX);
+            dirY = 0;
+        }
+        this.spash(dirX, dirY, cell);
+        cell.state = CellState.Falling;
     }
 
     jump(/** @type {Cell} */ cell) {
