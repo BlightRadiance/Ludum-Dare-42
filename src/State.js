@@ -21,6 +21,10 @@ class State {
         this.setupPayingField();
         this.overlay.init();
     }
+
+    update(dt) {
+        this.stage.update(dt);
+    }
     
     setupPayingField() {
         this.stage.setupPayingField(FieldWidth, FieldHeight);

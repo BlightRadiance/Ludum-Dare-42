@@ -52,10 +52,10 @@ class Game extends DragonBonesBase {
         this.layerStage = new PIXI.display.Group(0, false);
         app.stage.addChild(new PIXI.display.Layer(this.layerStage));
 
-        this.layerPlayer = new PIXI.display.Group(1, false);
+        this.layerPlayer = new PIXI.display.Group(2, false);
         app.stage.addChild(new PIXI.display.Layer(this.layerPlayer));
 
-        this.layerHelp = new PIXI.display.Group(2, false);
+        this.layerHelp = new PIXI.display.Group(1, false);
         app.stage.addChild(new PIXI.display.Layer(this.layerHelp));
     }
 
@@ -86,7 +86,7 @@ class Game extends DragonBonesBase {
     };
 
     update(dt) {
-
+        state.update(dt);
     }
 
     onSoundToggled() {

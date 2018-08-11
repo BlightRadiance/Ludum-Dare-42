@@ -21,10 +21,18 @@ class Stage {
                 land1.anchor.set(0.5);
                 app.stage.addChild(land1);
 
-                var cell = this.cells[this.getIndex(row, column)];
-                cell = new Cell(column, row, land1);
-                cell.setPosition(this.getCellXPosition(column), this.getCellYPosition(row));
-                cell.setSize(this.targetCellSize);
+                var index = this.getIndex(row, column);
+                this.cells[index] = new Cell(column, row, land1);
+                this.cells[index].setPosition(this.getCellXPosition(column), this.getCellYPosition(row));
+                this.cells[index].setSize(this.targetCellSize);
+            }
+        }
+    }
+
+    update(dt) {
+        for (var row = 0; row < this.cellsRowsCount; ++row) {
+            for (var column = 0; column < this.cellsColumnsCount; ++column) {
+                this.cells[this.getIndex(row, column)].update(dt);
             }
         }
     }
