@@ -62,7 +62,7 @@ class Overlay {
                             var cell = state.stage.getCell(row, column);
                             if (cell.layers[2] && this.type == OverlayType.Move) {
                                 // There is an object -> cant move
-                                return;
+                                continue;
                             }
                             app.stage.addChild(sprite);
                             this.sprites.push(sprite);
@@ -114,7 +114,7 @@ class Overlay {
                         var cell = state.stage.cells[state.stage.getIndex(row, column)];
                         if (cell.layers[2] && this.type == OverlayType.Move) {
                             // There is an object -> cant move
-                            return false;
+                            continue;
                         }
                         if (cell.row == click.row && cell.column == click.column) {
                             var command = pattern[pattern.length - patternRow - 1][patternColumn];

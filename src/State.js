@@ -28,11 +28,17 @@ class State {
         this.moveOverlay.init();
         this.attackOverlay.init();
 
-        var player = PIXI.Sprite.fromImage('player')
-        player.anchor.set(0.5, 0.7);
-        app.stage.addChild(player);
-        this.player = new GameObject(player, GameObjectType.Player);
-        this.player.setCell(0, 0);
+        var playerSprite1 = PIXI.Sprite.fromImage('player')
+        playerSprite1.anchor.set(0.5, 0.7);
+        app.stage.addChild(playerSprite1);
+        var playerObject1 = new GameObject(playerSprite1, GameObjectType.Player);
+        playerObject1.setCell(0, 0);
+
+        var playerSprite2 = PIXI.Sprite.fromImage('player')
+        playerSprite2.anchor.set(0.5, 0.7);
+        app.stage.addChild(playerSprite2);
+        var playerObject2 = new GameObject(playerSprite2, GameObjectType.Player);
+        playerObject2.setCell(2, 2);
     }
 
     update(dt) {
