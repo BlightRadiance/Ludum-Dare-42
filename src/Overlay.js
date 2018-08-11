@@ -193,7 +193,7 @@ class Overlay {
                         }
                         if (cell.row == click.row && cell.column == click.column) {
                             var command = pattern[pattern.length - patternRow - 1][patternColumn];
-                            state.applyPattern(cell, command);
+                            state.applyAction(cell, command, action);
                             return true;
                         }
                     }

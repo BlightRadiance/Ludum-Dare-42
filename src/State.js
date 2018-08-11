@@ -174,15 +174,19 @@ class State {
         }
     }
 
-    applyPattern(/** @type {Cell} */ cell, command) {
+    applyAction(/** @type {Cell} */ cell, command, action) {
         if (this.selectedCell) {
             if (command == 1) {
                 this.selectedCell.layers[2].setCell(cell.row, cell.column);
-                this.selectedCell = undefined;
+            } else if (action == Action.Jump) {
+                this.selectedCell.layers[2].setCell(cell.row, cell.column);
+            } else if (action == Action.Fire) {
+            console.log("Fire at " + cell.row + " " + cell.column);
             }
         } else {
             console.log("Player not selected -> unexpected")
         }
+        this.selectedCell = undefined;
     }
 
     onCellUp(/** @type {Cell} */ cell) {
