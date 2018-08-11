@@ -9,7 +9,7 @@ class Cell {
     constructor(row, column, sprite, /** @type {LayerGroup} */ layerGroup) {
         this.row = row;
         this.column = column;
-        this.layers = new Array(3);
+        this.layers = new Array(4);
         this.layers[0] = sprite;
         this.layerGroup = layerGroup;
         this.currentX = 0.0;
@@ -70,8 +70,8 @@ class Cell {
         for (var i = 0; i < this.layers.length; ++i) {
             var element = this.layers[i];
             if (element) {
-                element.scale.x = size / element.texture.width;
-                element.scale.y = size / element.texture.height;
+                element.scale.x = this.targetSize / element.texture.width;
+                element.scale.y = this.targetSize / element.texture.height;
             }
         }
     }
@@ -99,27 +99,27 @@ class Cell {
         }
     }
 
-    showHelp(sprite) {
-        sprite.x = this.getX();
-        sprite.y = this.getY();
-        sprite.scale.x = this.targetSize / sprite.texture.width;
-        sprite.scale.y = this.targetSize / sprite.texture.height;
-        sprite.parentGroup = this.layerGroup.layerHelp;
+    show(object, layer) {
+        object.x = this.getX();
+        object.y = this.getY();
+        var aspectRatio = object.texture.height / object.texture.width;
+        object.scale.x = this.targetSize / object.texture.width;
+        object.scale.y = this.targetSize * aspectRatio / object.texture.height;
+        switch (layer) {
+            case 1:
+            object.parentGroup = this.layerGroup.layerHelp;
+            break;
+            case 2:
+            object.parentGroup = this.layerGroup.layerPlayer;
+            break;
+            case 3:
+            object.parentGroup = this.layerGroup.layerOverlay;
+            break;
+        }
+        this.layers[layer] = object;
     }
 
-    showPlayer(player) {
-        player.x = this.getX();
-        player.y = this.getY();
-        player.scale.x = this.targetSize / player.texture.width;
-        player.scale.y = this.targetSize / player.texture.height;
-        player.parentGroup = this.layerGroup.layerPlayer;
-    }
-
-    showOverlay(overlay) {
-        overlay.x = this.getX();
-        overlay.y = this.getY();
-        overlay.scale.x = this.targetSize / overlay.texture.width;
-        overlay.scale.y = this.targetSize / overlay.texture.height;
-        overlay.parentGroup = this.layerGroup.layerOverlay;
+    unmanage(layer) {
+        this.layers[layer] = undefined;
     }
 }

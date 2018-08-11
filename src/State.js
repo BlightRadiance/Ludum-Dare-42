@@ -44,13 +44,13 @@ class State {
     
     onCellOver(/** @type {Cell} */ cell) {
         this.currentCell = cell;
-        this.overlay.onCellOver();
+        this.overlay.onCellOver(cell);
         //console.log("over " + cell.row + "; " + cell.column)
     }
 
     onCellOut(/** @type {Cell} */ cell) {
         this.currentCell = undefined;
-        this.overlay.onCellOut();
+        this.overlay.onCellOut(cell);
         //console.log("out " + cell.row + "; " + cell.column)
     }
 }

@@ -14,17 +14,18 @@ class Overlay {
         this.cursor.anchor.set(0.5);
         this.cursor.visible = false;
         app.stage.addChild(this.cursor);
-        this.onCellOver();
-    }
-
-    onCellOver() {
         if (state.currentCell) {
-            this.cursor.visible = true;
-            state.currentCell.showHelp(this.cursor);
+            this.onCellOver(state.currentCell);
         }
     }
 
-    onCellOut() {
+    onCellOver(/** @type {Cell} */ cell) {
+        this.cursor.visible = true;
+        cell.show(this.cursor, 1);
+    }
+
+    onCellOut(/** @type {Cell} */ cell) {
         this.cursor.visible = false;
+        cell.unmanage(1);
     }
 }

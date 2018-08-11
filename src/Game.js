@@ -73,7 +73,6 @@ class Game extends DragonBonesBase {
         PIXI.ticker.shared.add((dt) => {
             var realDt = PIXI.ticker.shared.elapsedMS / 1000.0;
             time += realDt;
-            console.log(realDt)
             this.update(realDt);
         });
     };
