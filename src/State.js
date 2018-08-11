@@ -2,7 +2,8 @@
 var GameStates = Object.freeze({
     "Tutorial": 1, 
     "Play": 2, 
-    "Gameover": 3, 
+    "AiTurn": 3, 
+    "Gameover": 4, 
 })
 
 var Action = Object.freeze({
@@ -21,7 +22,7 @@ class State {
         this.stage = new Stage();
         
         this.moveOverlay = new Overlay(OverlayType.Move);
-        this.movePattern = undefined;
+        this.movePattern = movePattern;
 
         this.actionMode = Action.None;
         this.attackOverlay = new Overlay(OverlayType.Attack);
@@ -31,7 +32,8 @@ class State {
         this.mouseOverCell = undefined;
         this.selectedCell = undefined;
 
-        this.GameObjects = new Array();
+        this.gameObjects = new Array();
+        this.playerObject = undefined;
     }
 
     init() {
@@ -40,6 +42,7 @@ class State {
         this.attackOverlay.init();
         this.setupObjects();
         this.initUi();
+        this.moveToState(GameStates.Play);
     }
 
     setupObjects() {
@@ -48,14 +51,15 @@ class State {
         app.stage.addChild(playerSprite1);
         var playerObject1 = new GameObject(playerSprite1, GameObjectType.Player);
         playerObject1.setCell(0, 0);
-        this.GameObjects.push(playerObject1);
+        this.gameObjects.push(playerObject1);
+        this.playerObject = playerObject1;
 
         var playerSprite2 = PIXI.Sprite.fromImage('player')
         playerSprite2.anchor.set(0.5, 0.7);
         app.stage.addChild(playerSprite2);
         var playerObject2 = new GameObject(playerSprite2, GameObjectType.AI);
         playerObject2.setCell(2, 2);
-        this.GameObjects.push(playerObject2);
+        this.gameObjects.push(playerObject2);
     }
 
     initUi() {
@@ -102,8 +106,38 @@ class State {
         }
     }
 
+    moveToState(state) {
+        switch(this.state) {
+            case GameStates.Play:
+            this.moveOverlay.hideOverlay();
+            this.attackOverlay.hideOverlay();
+            this.actionMode = Action.None;
+            this.selectedCell = undefined;
+            break;
+        }
+
+        this.state = state;
+        switch(this.state) {
+            case GameStates.Play:
+            this.selectedCell = this.playerObject.currentCell;
+            break;
+            case GameStates.AiTurn:
+            this.moveToNextState();
+            break;
+        }
+    }
+
+    moveToNextState() {
+        switch(this.state) {
+            case GameStates.Play: this.moveToState(GameStates.AiTurn); break;
+            case GameStates.AiTurn: this.moveToState( GameStates.Play); break;
+            case GameStates.Tutorial: this.moveToState( GameStates.Play); break;
+            case GameStates.Gameover: this.moveToState( GameStates.Play); break;
+        }
+    }
+
     update(dt) {
-        this.GameObjects.forEach(o => {
+        this.gameObjects.forEach(o => {
             o.update(dt);
         });
         this.stage.update(dt);
@@ -148,8 +182,7 @@ class State {
                 if (this.moveOverlay.isWithin(this.currentCell, this.selectedCell, this.attackMovePattern)) {
                     var success = this.attackOverlay.apply(cell, cell, this.movePattern, this.actionMode);
                     if (success) {
-                        this.selectedCell = undefined;
-                        this.actionMode = Action.None;
+                        this.moveToNextState();
                     }
                 }
             break;
@@ -162,28 +195,11 @@ class State {
     }
 
     tryToMove(/** @type {Cell} */ cell) {
-        if (cell.layers[2]) {
-            if (this.selectedCell) {
-                switch (cell.layers[2].type) {
-                    case GameObjectType.Player:
-                        // Switch to other unit
-                        this.selectedCell = cell;
-                    return;
-                }
-            } else {
-                switch (cell.layers[2].type) {
-                    case GameObjectType.Player:
-                        // Switch to other unit
-                        this.selectedCell = cell;
-                        this.movePattern = movePattern;
-                    return;
-                }
-            }
-        } else {
+        if (!cell.layers[2]) {
             // Try to apply move pattern
             var success = this.moveOverlay.apply(this.selectedCell, cell, this.movePattern, this.actionMode);
-            if (!success) {
-                this.selectedCell = undefined;
+            if (success) {
+                this.moveToNextState();
             }
         }
     }
@@ -200,7 +216,7 @@ class State {
         } else {
             console.log("Player not selected -> unexpected")
         }
-        this.selectedCell = undefined;
+        this.moveToNextState();
     }
 
     fire(/** @type {Cell} */ cell) {
