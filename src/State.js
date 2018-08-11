@@ -30,6 +30,10 @@ class State {
         this.stage.setupPayingField(FieldWidth, FieldHeight);
     }
 
+    onCellDropped(/** @type {Cell} */ cell) {
+
+    }
+
     onCellDown(/** @type {Cell} */ cell) {
         //console.log("down " + cell.row + "; " + cell.column)
     }

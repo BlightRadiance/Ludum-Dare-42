@@ -1,4 +1,10 @@
 //@ts-check
+var CellState = Object.freeze({
+    "Ok": 1, 
+    "Falling": 2, 
+    "Gone": 3, 
+})
+
 class Cell {
     constructor(row, column, sprite) {
         this.row = row;
@@ -8,8 +14,13 @@ class Cell {
         this.currentX = 0.0;
         this.currentY = 0.0;
         this.targetSize = 1024;
+        
+        this.fallingTime = 0.0;
+        this.fallingTimeMax = 2.0;
 
-        this.wobbleFactor = (20 + Math.random() * 20) * 2;
+        this.state = CellState.Ok;
+
+        this.wobbleFactor = (1 + Math.random()) / 1.5;
         this.wobbleHeightFactor = 10;
         this.offsetY = 0.0;        
 
@@ -32,13 +43,29 @@ class Cell {
     }
 
     update(dt) {
-        this.offsetY = Math.sin(time / this.wobbleFactor) * this.wobbleHeightFactor;
-        this.updatePosition();
+        switch (this.state) {
+            case CellState.Ok:
+                this.offsetY = Math.sin(time / this.wobbleFactor) * this.wobbleHeightFactor;
+                this.updatePosition();
+            break;
+            case CellState.Falling:
+                this.offsetY += 30 * dt;
+                this.updatePosition();
+                this.fallingTime += dt;
+                if (this.fallingTime > this.fallingTimeMax) {
+                    this.state = CellState.Gone;
+                    state.onCellDropped(this);
+                }
+            break;
+            case CellState.Gone:
+
+            break;
+        }
     }
 
     setSize(size) {
         this.targetSize = size;
-        this.wobbleHeightFactor = this.targetSize / 30.0;
+        this.wobbleHeightFactor = this.targetSize / 40.0;
         for (var i = 0; i < this.layers.length; ++i) {
             var element = this.layers[i];
             if (element) {

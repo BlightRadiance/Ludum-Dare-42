@@ -80,8 +80,10 @@ class Game extends DragonBonesBase {
         state.init();
 
         PIXI.ticker.shared.add((dt) => {
-            time += dt;
-            this.update(dt);
+            var realDt = PIXI.ticker.shared.elapsedMS / 1000.0;
+            time += realDt;
+            console.log(realDt)
+            this.update(realDt);
         });
     };
 
