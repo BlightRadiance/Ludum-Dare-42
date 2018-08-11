@@ -1,8 +1,7 @@
 //@ts-check
 var OverlayType = Object.freeze({
-    "CursorGreen": 1, 
-    "CursorRed": 2, 
-    "CursorYellow": 3, 
+    "Move": 1, 
+    "Attack": 2, 
 })
 
 /*
@@ -11,14 +10,14 @@ var OverlayType = Object.freeze({
 */
 
 var movePattern = [
-    [1, 0, 1],
+    [1, 1, 1],
     [1, -1, 1],
-    [0, 1, 0],
+    [1, 1, 1],
 ]
 
 class Overlay {
-    constructor() {
-        this.type = OverlayType.CursorGreen;
+    constructor(type) {
+        this.type = type;
         this.sprites = new Array();
     }
 
@@ -61,6 +60,10 @@ class Overlay {
                     if (column >= 0 && column < state.stage.cellsColumnsCount) {
                         if (row >= 0 && row < state.stage.cellsRowsCount) {
                             var cell = state.stage.getCell(row, column);
+                            if (cell.layers[2] && this.type == OverlayType.Move) {
+                                // There is an object -> cant move
+                                return;
+                            }
                             app.stage.addChild(sprite);
                             this.sprites.push(sprite);
                             cell.show(sprite, 1);
@@ -109,6 +112,10 @@ class Overlay {
                 if (column >= 0 && column < state.stage.cellsColumnsCount) {
                     if (row >= 0 && row < state.stage.cellsRowsCount) {
                         var cell = state.stage.cells[state.stage.getIndex(row, column)];
+                        if (cell.layers[2] && this.type == OverlayType.Move) {
+                            // There is an object -> cant move
+                            return false;
+                        }
                         if (cell.row == click.row && cell.column == click.column) {
                             var command = pattern[pattern.length - patternRow - 1][patternColumn];
                             state.applyPattern(cell, command);

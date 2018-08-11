@@ -14,10 +14,10 @@ class State {
         this.state = GameStates.Play;
         this.stage = new Stage();
         
-        this.moveOverlay = new Overlay();
+        this.moveOverlay = new Overlay(OverlayType.Move);
         this.movePattern = undefined;
 
-        this.attackOverlay = new Overlay();
+        this.attackOverlay = new Overlay(OverlayType.Attack);
 
         this.mouseOverCell = undefined;
         this.selectedCell = undefined;
