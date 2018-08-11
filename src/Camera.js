@@ -15,10 +15,6 @@ class Camera {
         this.screenCenterAdjustmentY = 0;
     }
 
-    init() {
-
-    }
-
     getRealWidth() {
         return app.screen.width / app.stage.scale.x;
     }
@@ -73,7 +69,7 @@ class Camera {
         var halfTarget = this.targetScreenSize / 2.0;
         var width = this.getRealWidth();
         var height = this.getRealHeight();
-        this.border.parentGroup = game.layerUi;
+        this.border.parentGroup = state.layerUi;
         this.border.lineStyle(lineWidth, 0x000000, 1);
 
         this.border.beginFill(0x000000);

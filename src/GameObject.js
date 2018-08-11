@@ -37,6 +37,7 @@ class GameObject {
         }
         if (remove) {
             app.stage.removeChild(this.graphics);
+            state.moveToState(GameStates.Gameover);
         }
     }
 

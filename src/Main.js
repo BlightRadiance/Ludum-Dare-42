@@ -12,8 +12,6 @@ window.onload = function () {
     app.renderer.view.style.display = "block";
     app.renderer.autoResize = true;
     game.init();
-
-    onResizeWindow();
 }
 
 window.onresize = onResizeWindow;

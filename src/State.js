@@ -4,6 +4,7 @@ var GameStates = Object.freeze({
     "Play": 2, 
     "AiTurn": 3, 
     "Gameover": 4, 
+    "Win": 5,
 })
 
 var Action = Object.freeze({
@@ -34,15 +35,20 @@ class State {
 
         this.gameObjects = new Array();
         this.playerObject = undefined;
+
+        this.restartButton = undefined;
+        this.camera = new Camera();        
     }
 
     init() {
+        this.initLayers();
         this.setupPayingField();
         this.moveOverlay.init();
         this.attackOverlay.init();
         this.setupObjects();
         this.initUi();
         this.moveToState(GameStates.Play);
+        onResizeWindow();
     }
 
     setupObjects() {
@@ -68,8 +74,8 @@ class State {
         action1Sprite.anchor.set(0.5);
         app.stage.addChild(action1Sprite);
         action1Sprite.interactive = true;
-        action1Sprite.x = game.camera.targetScreenSize / 2.0 - action1Sprite.width / 2.0;
-        action1Sprite.y = game.camera.targetScreenSize / 2.0 - action1Sprite.height / 2.0;
+        action1Sprite.x = this.camera.targetScreenSize / 2.0 - action1Sprite.width / 2.0;
+        action1Sprite.y = this.camera.targetScreenSize / 2.0 - action1Sprite.height / 2.0;
         action1Sprite.on('pointerup', () => {
             self.onAction(Action.Jump);
         });
@@ -78,11 +84,35 @@ class State {
         action2Sprite.anchor.set(0.5);
         app.stage.addChild(action2Sprite);
         action2Sprite.interactive = true;
-        action2Sprite.x = -game.camera.targetScreenSize / 2.0 + action1Sprite.width / 2.0;
-        action2Sprite.y = game.camera.targetScreenSize / 2.0 - action1Sprite.height / 2.0;
+        action2Sprite.x = -this.camera.targetScreenSize / 2.0 + action1Sprite.width / 2.0;
+        action2Sprite.y = this.camera.targetScreenSize / 2.0 - action1Sprite.height / 2.0;
         action2Sprite.on('pointerup', () => {
             self.onAction(Action.Fire);
         });
+
+        this.restartButton = PIXI.Sprite.fromImage('overlay_base')
+        this.restartButton.anchor.set(0.5);
+        app.stage.addChild(this.restartButton);
+        this.restartButton.interactive = false;
+        this.restartButton.visible = false;
+        this.restartButton.x = action1Sprite.width / 2.0;
+        this.restartButton.y =  action1Sprite.height / 2.0;
+        this.restartButton.parentGroup =  this.layerUi;
+        this.restartButton.on('pointerup', () => {
+            self.moveToState(GameStates.Gameover);
+            self.moveToNextState();
+        });
+    }
+
+    initLayers() {
+        app.stage = new PIXI.display.Stage();
+        app.stage.group.enableSort = true;
+
+        this.layerUi = new PIXI.display.Group(1000, false);
+        app.stage.addChild(new PIXI.display.Layer(this.layerUi));
+
+        this.layerBackground = new PIXI.display.Group(-1, false);
+        app.stage.addChild(new PIXI.display.Layer(this.layerBackground));
     }
 
     onAction(action) {
@@ -107,22 +137,39 @@ class State {
     }
 
     moveToState(state) {
-        switch(this.state) {
+        var oldState = this.state;
+        this.state = state;
+        switch(oldState) {
             case GameStates.Play:
             this.moveOverlay.hideOverlay();
             this.attackOverlay.hideOverlay();
             this.actionMode = Action.None;
             this.selectedCell = undefined;
             break;
+            case GameStates.Win:
+            case GameStates.Gameover:
+                this.restartButton.interactive = false;
+                this.restartButton.visible = false;
+                app.stage.removeChildren();
+                this.gameObjects = new Array();
+                FieldWidth = 5 - Math.round((Math.random() * 5) / 2.0);
+                FieldHeight = 5 - Math.round((Math.random() * 5) / 2.0);
+                this.init();
+            break;
         }
 
-        this.state = state;
         switch(this.state) {
             case GameStates.Play:
             this.selectedCell = this.playerObject.currentCell;
             break;
             case GameStates.AiTurn:
             this.moveToNextState();
+            break;
+
+            case GameStates.Win:
+            case GameStates.Gameover:
+            this.restartButton.interactive = true;
+            this.restartButton.visible = true;
             break;
         }
     }
@@ -133,10 +180,15 @@ class State {
             case GameStates.AiTurn: this.moveToState( GameStates.Play); break;
             case GameStates.Tutorial: this.moveToState( GameStates.Play); break;
             case GameStates.Gameover: this.moveToState( GameStates.Play); break;
+            case GameStates.Win: this.moveToState( GameStates.Play); break;
         }
     }
 
     update(dt) {
+        if (this.state == GameStates.Gameover 
+            || this.state == GameStates.Win) {
+                return;
+        }
         this.gameObjects.forEach(o => {
             o.update(dt);
         });
@@ -189,8 +241,6 @@ class State {
         }
 
         //this.overlay.apply(this.selectedCell, movePattern);
-        //app.stage.removeChildren();
-        //this.stage.setupPayingField(FieldWidth + 1, FieldHeight + 1);
         //console.log("down " + cell.row + "; " + cell.column)
     }
 

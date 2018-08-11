@@ -17,10 +17,9 @@ class LayerGroup {
 }
 
 class Stage {
-
     setupPayingField(width, height) {
         this.cells = new Array(width * height);
-        this.targetFieldSize = game.camera.targetScreenSize;
+        this.targetFieldSize = state.camera.targetScreenSize;
         this.targetHalfFieldSize = this.targetFieldSize / 2.0;
         this.cellsColumnsCount = width;
         this.cellsRowsCount = height;
@@ -32,7 +31,7 @@ class Stage {
         }
         
         this.lrs = Array();
-        for (var i = 0; i < this.cellsRowsCount * 3; ++i) {
+        for (var i = 0; i < (this.cellsRowsCount * this.cellsColumnsCount); ++i) {
             this.lrs.push(new LayerGroup(i * 4))
         }
 

@@ -3,7 +3,6 @@ class Game extends DragonBonesBase {
     constructor() {
         super();
         this.pixiResources = undefined;
-        this.camera = new Camera();        
         this.pushDragonBonesResources();
     }
 
@@ -13,16 +12,12 @@ class Game extends DragonBonesBase {
     }
 
     init() {
-        this.initLayers();
-
-        this.camera.init();
         this.loadResources();
         this.preloadOtherResources();
 
         this.ceterText = new PIXI.Text('Loading');
         this.ceterText.x = 0;
         this.ceterText.y = 0;
-        this.ceterText.parentGroup = this.layerUi;
         this.ceterText.anchor.set(0.5);
         app.stage.addChild(this.ceterText);
 
@@ -39,17 +34,6 @@ class Game extends DragonBonesBase {
         PIXI.loader.load();
     }
 
-    initLayers() {
-        app.stage = new PIXI.display.Stage();
-        app.stage.group.enableSort = true;
-
-        this.layerUi = new PIXI.display.Group(1000, false);
-        app.stage.addChild(new PIXI.display.Layer(this.layerUi));
-
-        this.layerBackground = new PIXI.display.Group(-1, false);
-        app.stage.addChild(new PIXI.display.Layer(this.layerBackground));
-    }
-
     preloadOtherResources() {
         PIXI.loader.add('land1', "resource/land.png");
         PIXI.loader.add('player', "resource/player.png");
@@ -58,7 +42,7 @@ class Game extends DragonBonesBase {
     }
 
     resize() {
-        this.camera.resize();
+        state.camera.resize();
     }
 
     collides(/** @type {PIXI.Rectangle} */ a, /** @type {PIXI.Rectangle} */ b) {
