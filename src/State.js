@@ -93,10 +93,9 @@ class State {
         this.restartButton = PIXI.Sprite.fromImage('overlay_base')
         this.restartButton.anchor.set(0.5);
         app.stage.addChild(this.restartButton);
-        this.restartButton.interactive = false;
-        this.restartButton.visible = false;
-        this.restartButton.x = action1Sprite.width / 2.0;
-        this.restartButton.y =  action1Sprite.height / 2.0;
+        this.restartButton.x = -this.camera.targetScreenSize / 2.0 + action1Sprite.width / 2.0;
+        this.restartButton.y = -this.camera.targetScreenSize / 2.0 + action1Sprite.height / 2.0;
+        this.restartButton.interactive = true;
         this.restartButton.parentGroup =  this.layerUi;
         this.restartButton.on('pointerup', () => {
             self.moveToState(GameStates.Gameover);
@@ -148,8 +147,6 @@ class State {
             break;
             case GameStates.Win:
             case GameStates.Gameover:
-                this.restartButton.interactive = false;
-                this.restartButton.visible = false;
                 app.stage.removeChildren();
                 this.gameObjects = new Array();
                 FieldWidth = 5 - Math.round((Math.random() * 5) / 2.0);
@@ -168,8 +165,6 @@ class State {
 
             case GameStates.Win:
             case GameStates.Gameover:
-            this.restartButton.interactive = true;
-            this.restartButton.visible = true;
             break;
         }
     }
