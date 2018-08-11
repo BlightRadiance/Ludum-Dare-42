@@ -13,14 +13,20 @@ class State {
         this.paused = false;
         this.state = GameStates.Play;
         this.stage = new Stage();
-        this.overlay = new Overlay();
+        
+        this.moveOverlay = new Overlay();
+        this.movePattern = undefined;
+
+        this.attackOverlay = new Overlay();
+
         this.mouseOverCell = undefined;
         this.selectedCell = undefined;
     }
 
     init() {
         this.setupPayingField();
-        this.overlay.init();
+        this.moveOverlay.init();
+        this.attackOverlay.init();
 
         var player = PIXI.Sprite.fromImage('player')
         player.anchor.set(0.5, 0.7);
@@ -31,10 +37,10 @@ class State {
 
     update(dt) {
         this.stage.update(dt);
-        if (this.currentCell) {
-            this.overlay.drawOverlay(this.currentCell, this.selectedCell, movePattern);
+        if (this.selectedCell) {
+            this.moveOverlay.drawOverlay(this.selectedCell, movePattern);
         } else {
-            this.overlay.hideOverlay();
+            this.moveOverlay.hideOverlay();
         }
     }
     
@@ -48,12 +54,48 @@ class State {
 
     onCellDown(/** @type {Cell} */ cell) {
         if (cell.layers[2]) {
-            this.selectedCell = cell;
+            if (this.selectedCell) {
+                switch (cell.layers[2].type) {
+                    case GameObjectType.Player:
+                        // Switch to other unit
+                        this.selectedCell = cell;
+                    return;
+                    default:
+                        // Some entity, try to apply attack pattern
+                        this.attackOverlay.apply(this.selectedCell, cell, this.movePattern);
+                    break;
+                }
+            } else {
+                switch (cell.layers[2].type) {
+                    case GameObjectType.Player:
+                        // Switch to other unit
+                        this.selectedCell = cell;
+                        this.movePattern = movePattern;
+                    return;
+                }
+            }
+        } else {
+            // Try to apply move pattern
+            var success = this.moveOverlay.apply(this.selectedCell, cell, this.movePattern);
+            if (!success) {
+                this.selectedCell = undefined;
+            }
         }
-        this.overlay.apply(this.currentCell, this.selectedCell, movePattern);
+        //this.overlay.apply(this.selectedCell, movePattern);
         //app.stage.removeChildren();
         //this.stage.setupPayingField(FieldWidth + 1, FieldHeight + 1);
         //console.log("down " + cell.row + "; " + cell.column)
+    }
+
+    applyPattern(/** @type {Cell} */ cell, command) {
+        if (this.selectedCell) {
+            if (command == 1) {
+                this.selectedCell.layers[2].setCell(cell.row, cell.column);
+                this.selectedCell = undefined;
+            }
+        } else {
+            console.log("Player not selected -> unexpected")
+        }
     }
 
     onCellUp(/** @type {Cell} */ cell) {
@@ -62,7 +104,7 @@ class State {
     
     onCellOver(/** @type {Cell} */ cell) {
         this.currentCell = cell;
-        console.log("over " + cell.row + "; " + cell.column)
+        //console.log("over " + cell.row + "; " + cell.column)
     }
 
     onCellOut(/** @type {Cell} */ cell) {

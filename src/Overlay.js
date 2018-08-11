@@ -25,21 +25,8 @@ class Overlay {
     init() {
     }
 
-    drawOverlay(/** @type {Cell} */ mouse, /** @type {Cell} */ selected, pattern) {
+    drawOverlay(/** @type {Cell} */ target, pattern) {
         this.hideOverlay();
-        this.drawPattern(mouse, pattern);
-    }
-
-    hideOverlay() {
-        state.stage.clearLayer(1);
-        for (var i = 0; i < this.sprites.length; ++i) {
-            var sprite = this.sprites[i];
-            app.stage.removeChild(sprite);
-        }
-        this.sprites = new Array();
-    }
-
-    drawPattern(/** @type {Cell} */ target, pattern) {
 
         // Find center
         var centerX = undefined;
@@ -71,7 +58,6 @@ class Overlay {
                 if (sprite) {
                     var column = centerX - patternColumn + target.column;
                     var row = centerY - patternRow + target.row;
-                    console.log(target.column + " " + target.row);
                     if (column >= 0 && column < state.stage.cellsColumnsCount) {
                         if (row >= 0 && row < state.stage.cellsRowsCount) {
                             var cell = state.stage.getCell(row, column);
@@ -86,7 +72,16 @@ class Overlay {
         }
     }
 
-    apply(/** @type {Cell} */ mouse, /** @type {Cell} */ selected, pattern) {
+    hideOverlay() {
+        state.stage.clearLayer(1);
+        for (var i = 0; i < this.sprites.length; ++i) {
+            var sprite = this.sprites[i];
+            app.stage.removeChild(sprite);
+        }
+        this.sprites = new Array();
+    }
+
+    apply(/** @type {Cell} */ target, click, pattern) {
         if (this.sprites.length == 0) {
             return;
         }
@@ -109,29 +104,20 @@ class Overlay {
         // Draw
         for(var patternRow = 0; patternRow < pattern.length; ++patternRow) {
             for(var patternColumn = 0; patternColumn < pattern.length; ++patternColumn) {
-                var sprite = undefined;
-                switch(pattern[pattern.length - patternRow - 1][patternColumn]) {
-                    case 1:
-                    sprite = PIXI.Sprite.fromImage('overlay_base')
-                    sprite.anchor.set(0.5);
-                    break;
-                }
-
-                if (sprite) {
-                    var column = centerX - patternColumn + target.column;
-                    var row = centerY - patternRow + target.row;
-                    console.log(target.column + " " + target.row);
-                    if (column >= 0 && column < state.stage.cellsColumnsCount) {
-                        if (row >= 0 && row < state.stage.cellsRowsCount) {
-                            var cell = state.stage.cells[state.stage.getIndex(row, column)];
-                            app.stage.addChild(sprite);
-                            this.sprites.push(sprite);
-                            cell.show(sprite, 1);
+                var column = centerX - patternColumn + target.column;
+                var row = centerY - patternRow + target.row;
+                if (column >= 0 && column < state.stage.cellsColumnsCount) {
+                    if (row >= 0 && row < state.stage.cellsRowsCount) {
+                        var cell = state.stage.cells[state.stage.getIndex(row, column)];
+                        if (cell.row == click.row && cell.column == click.column) {
+                            var command = pattern[pattern.length - patternRow - 1][patternColumn];
+                            state.applyPattern(cell, command);
+                            return true;
                         }
                     }
                 }
-                sprite = undefined;
             }
         }
+        return false;
     }
 }

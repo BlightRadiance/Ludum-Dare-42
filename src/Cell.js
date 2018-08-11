@@ -91,7 +91,12 @@ class Cell {
 
     updatePosition() {
         for (var i = 0; i < this.layers.length; ++i) {
-            var element = this.layers[i];
+            var element;
+            if (i == 2 && this.layers[i]) {
+                element = this.layers[i].graphics;
+            } else {
+                element = this.layers[i];
+            }
             if (element) {
                 element.x = this.getX();
                 element.y = this.getY();;
@@ -100,20 +105,27 @@ class Cell {
     }
 
     show(object, layer) {
-        object.x = this.getX();
-        object.y = this.getY();
-        var aspectRatio = object.texture.height / object.texture.width;
-        object.scale.x = this.targetSize / object.texture.width;
-        object.scale.y = this.targetSize * aspectRatio / object.texture.height;
+        var graphics;
+        if (layer == 2) {
+            graphics = object.graphics;
+        } else {
+            graphics = object;
+        }
+
+        graphics.x = this.getX();
+        graphics.y = this.getY();
+        var aspectRatio = graphics.texture.height / graphics.texture.width;
+        graphics.scale.x = this.targetSize / graphics.texture.width;
+        graphics.scale.y = this.targetSize * aspectRatio / graphics.texture.height;
         switch (layer) {
             case 1:
-            object.parentGroup = this.layerGroup.layerHelp;
+            graphics.parentGroup = this.layerGroup.layerHelp;
             break;
             case 2:
-            object.parentGroup = this.layerGroup.layerPlayer;
+            graphics.parentGroup = this.layerGroup.layerPlayer;
             break;
             case 3:
-            object.parentGroup = this.layerGroup.layerOverlay;
+            graphics.parentGroup = this.layerGroup.layerOverlay;
             break;
         }
         this.layers[layer] = object;
