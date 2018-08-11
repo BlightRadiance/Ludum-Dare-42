@@ -98,13 +98,20 @@ class State {
         this.stage.update(dt);
         if (this.selectedCell) {
             if (this.actionMode != Action.None) {
-                this.moveOverlay.drawOverlay(this.selectedCell, this.attackMovePattern);
-                this.attackOverlay.drawOverlay(this.currentCell, this.attackPattern);
+                this.moveOverlay.type = OverlayType.Attack;
+                this.moveOverlay.drawOverlay(this.selectedCell, this.attackMovePattern, this.actionMode);
+                if (this.moveOverlay.isWithin(this.currentCell, this.selectedCell, this.attackMovePattern, this.actionMode)) {
+                    this.attackOverlay.drawOverlay(this.currentCell, this.attackPattern, this.actionMode);
+                } else {
+                    this.attackOverlay.hideOverlay();
+                }
             } else {
-                this.moveOverlay.drawOverlay(this.selectedCell, movePattern);
+                this.moveOverlay.type = OverlayType.Move;
+                this.moveOverlay.drawOverlay(this.selectedCell, movePattern, this.actionMode);
             }
         } else {
             this.moveOverlay.hideOverlay();
+            this.attackOverlay.hideOverlay();
         }
     }
     
@@ -124,7 +131,13 @@ class State {
             case Action.Fire:
             case Action.Jump:
                 // Try to apply attack pattern
-                this.attackOverlay.apply(cell, cell, this.movePattern);
+                if (this.moveOverlay.isWithin(this.currentCell, this.selectedCell, this.attackMovePattern)) {
+                    var success = this.attackOverlay.apply(cell, cell, this.movePattern, this.actionMode);
+                    if (success) {
+                        this.selectedCell = undefined;
+                        this.actionMode = Action.None;
+                    }
+                }
             break;
         }
 
@@ -154,7 +167,7 @@ class State {
             }
         } else {
             // Try to apply move pattern
-            var success = this.moveOverlay.apply(this.selectedCell, cell, this.movePattern);
+            var success = this.moveOverlay.apply(this.selectedCell, cell, this.movePattern, this.actionMode);
             if (!success) {
                 this.selectedCell = undefined;
             }

@@ -45,7 +45,7 @@ class Overlay {
     init() {
     }
 
-    drawOverlay(/** @type {Cell} */ target, pattern) {
+    drawOverlay(/** @type {Cell} */ target, pattern, action) {
         this.hideOverlay();
         if (!target) {
             return;
@@ -71,6 +71,7 @@ class Overlay {
             for(var patternColumn = 0; patternColumn < pattern.length; ++patternColumn) {
                 var sprite = undefined;
                 switch(pattern[pattern.length - patternRow - 1][patternColumn]) {
+                    case -1:
                     case 0:
                     break;
                     case 1:
@@ -89,7 +90,7 @@ class Overlay {
                     if (column >= 0 && column < state.stage.cellsColumnsCount) {
                         if (row >= 0 && row < state.stage.cellsRowsCount) {
                             var cell = state.stage.getCell(row, column);
-                            if (cell.layers[2] && this.type == OverlayType.Move) {
+                            if (cell.layers[2] && (this.type == OverlayType.Move)) {
                                 // There is an object -> cant move
                                 continue;
                             }
@@ -113,8 +114,53 @@ class Overlay {
         this.sprites = new Array();
     }
 
-    apply(/** @type {Cell} */ target, click, pattern) {
-        if (this.sprites.length == 0 && !target) {
+    isWithin(/** @type {Cell} */ cell, /** @type {Cell} */ target, pattern, action) {
+        if (this.sprites.length == 0 || !target || !cell) {
+            return;
+        }
+        // Find center
+        var centerX = 0;
+        var centerY = 0;
+        for (var patternRow = 0; patternRow < pattern.length; ++patternRow) {
+            for (var patternColumn = 0; patternColumn < pattern.length; ++patternColumn) {
+                if (pattern[patternRow][patternColumn] == -1) {
+                    centerX = patternRow;
+                    centerY = patternColumn;
+                    break;
+                }
+            }
+            if (centerX && centerY) {
+                break;
+            }
+        }
+
+        // Draw
+        for(var patternRow = 0; patternRow < pattern.length; ++patternRow) {
+            for(var patternColumn = 0; patternColumn < pattern.length; ++patternColumn) {
+                var column = centerX - patternColumn + target.column;
+                var row = centerY - patternRow + target.row;
+                if (column >= 0 && column < state.stage.cellsColumnsCount) {
+                    if (row >= 0 && row < state.stage.cellsRowsCount) {
+                        var targetCell = state.stage.cells[state.stage.getIndex(row, column)];
+                        var command = pattern[pattern.length - patternRow - 1][patternColumn];
+                        if (targetCell.layers[2] && (this.type == OverlayType.Move || action == Action.Jump)) {
+                            // There is an object -> cant move
+                            continue;
+                        }
+                        if (cell.row == targetCell.row && cell.column == targetCell.column) {
+                            if (command != 0) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    apply(/** @type {Cell} */ target, click, pattern, action) {
+        if (this.sprites.length == 0 || !target) {
             return;
         }
         // Find center
@@ -141,7 +187,7 @@ class Overlay {
                 if (column >= 0 && column < state.stage.cellsColumnsCount) {
                     if (row >= 0 && row < state.stage.cellsRowsCount) {
                         var cell = state.stage.cells[state.stage.getIndex(row, column)];
-                        if (cell.layers[2] && this.type == OverlayType.Move) {
+                        if (cell.layers[2] && (this.type == OverlayType.Move)) {
                             // There is an object -> cant move
                             continue;
                         }
