@@ -26,7 +26,7 @@ class State {
         this.actionMode = Action.None;
         this.attackOverlay = new Overlay(OverlayType.Attack);
         this.attackPattern = undefined;
-        this.attackMovePattern = attackMovePattern;
+        this.attackMovePattern = undefined;
 
         this.mouseOverCell = undefined;
         this.selectedCell = undefined;
@@ -86,9 +86,11 @@ class State {
             switch(action) {
                 case Action.Fire:
                     this.attackPattern = attackPattern;
+                    this.attackMovePattern = attackMovePattern;
                 break;
                 case Action.Jump:
                     this.attackPattern = jumpPattern;
+                    this.attackMovePattern = jumpMovePattern;
                 break;
             }
         }
