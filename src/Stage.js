@@ -32,7 +32,7 @@ class Stage {
         }
         
         var lrs = Array();
-        for (var i = 0; i < this.cellsRowsCount * 2; ++i) {
+        for (var i = 0; i < this.cellsRowsCount * 3; ++i) {
             lrs.push(new LayerGroup(i * 4))
         }
 
@@ -63,6 +63,10 @@ class Stage {
     }
 
     getCell(row, column) {
+        if (row < 0 || row >= this.cellsRowsCount
+            || column < 0 || column >= this.cellsColumnsCount) {
+            return undefined;
+        }
         return this.cells[this.getIndex(row, column)];
     }
 

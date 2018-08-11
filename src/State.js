@@ -11,8 +11,8 @@ var Action = Object.freeze({
     "Jump": 3, 
 })
 
-var FieldWidth = 8;
-var FieldHeight = 8;
+var FieldWidth = 4;
+var FieldHeight = 4;
 
 class State {
     constructor() {
@@ -122,7 +122,10 @@ class State {
     }
 
     onCellDropped(/** @type {Cell} */ cell) {
-
+        if (cell && cell.layers[2]) {
+            console.log("Drop: " + cell.layers[2]);
+            cell.layers[2].unmanage(true);
+        }
     }
 
     onCellDown(/** @type {Cell} */ cell) {
@@ -181,7 +184,7 @@ class State {
             if (command == 1) {
                 this.selectedCell.layers[2].setCell(cell.row, cell.column);
             } else if (action == Action.Jump) {
-                this.selectedCell.layers[2].setCell(cell.row, cell.column);
+                this.jump(cell);
             } else if (action == Action.Fire) {
                 cell.state = CellState.Falling;
                 console.log("Fire at " + cell.row + " " + cell.column);
@@ -192,13 +195,41 @@ class State {
         this.selectedCell = undefined;
     }
 
+    jump(/** @type {Cell} */ cell) {
+        this.selectedCell.layers[2].setCell(cell.row, cell.column);
+        this.spash(-1, 0, this.stage.getCell(cell.row, cell.column - 1));
+        this.spash(1, 0, this.stage.getCell(cell.row, cell.column + 1));
+        this.spash(0, 1, this.stage.getCell(cell.row + 1, cell.column));
+        this.spash(0, -1, this.stage.getCell(cell.row - 1, cell.column));
+    }
+
+    spash(dirX, dirY, cell) {
+        if (cell && cell.layers[2]) {
+            switch (cell.layers[2].type) {
+                case GameObjectType.AI:
+                    var newColumn = cell.column + dirX;
+                    var newRow = cell.row + dirY;
+                    var newCell = this.stage.getCell(newRow, newColumn);
+                    if (newCell && newCell.state == CellState.Ok) {
+                        cell.layers[2].setCell(newRow, newColumn);
+                    } else {
+                        this.onCellDropped(cell);
+                    }
+                break;
+                case GameObjectType.Building:
+
+                break;
+            }
+        }
+    }
+
     onCellUp(/** @type {Cell} */ cell) {
         //console.log("up " + cell.row + "; " + cell.column)
     }
     
     onCellOver(/** @type {Cell} */ cell) {
         this.currentCell = cell;
-        console.log("over " + cell.row + "; " + cell.column)
+        //console.log("over " + cell.row + "; " + cell.column)
     }
 
     onCellOut(/** @type {Cell} */ cell) {

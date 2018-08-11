@@ -13,10 +13,17 @@ class GameObject {
     }
 
     setCell(row, column) {
+        this.unmanage(false);
+        this.currentCell = state.stage.getCell(row, column);
+        this.currentCell.show(this, 2);
+    }
+
+    unmanage(remove) {
         if (this.currentCell) {
             this.currentCell.unmanage(2);
         }
-        this.currentCell = state.stage.getCell(row, column);
-        this.currentCell.show(this, 2);
+        if (remove) {
+            app.stage.removeChild(this.graphics);
+        }
     }
 }
