@@ -6,11 +6,12 @@ var CellState = Object.freeze({
 })
 
 class Cell {
-    constructor(row, column, sprite) {
+    constructor(row, column, sprite, /** @type {LayerGroup} */ layerGroup) {
         this.row = row;
         this.column = column;
         this.layers = new Array(3);
         this.layers[0] = sprite;
+        this.layerGroup = layerGroup;
         this.currentX = 0.0;
         this.currentY = 0.0;
         this.targetSize = 1024;
@@ -25,7 +26,7 @@ class Cell {
         this.offsetY = 0.0;        
 
         sprite.interactive = true;
-        sprite.parentGroup = game.layerStage;
+        sprite.parentGroup = this.layerGroup.layerStage;
 
         var self = this;
         sprite.on('pointerdown', () => {
@@ -58,7 +59,7 @@ class Cell {
                 }
             break;
             case CellState.Gone:
-
+                this.layers[0].visible = false;
             break;
         }
     }
@@ -103,7 +104,7 @@ class Cell {
         sprite.y = this.getY();
         sprite.scale.x = this.targetSize / sprite.texture.width;
         sprite.scale.y = this.targetSize / sprite.texture.height;
-        sprite.parentGroup = game.layerHelp;
+        sprite.parentGroup = this.layerGroup.layerHelp;
     }
 
     showPlayer(player) {
@@ -111,6 +112,14 @@ class Cell {
         player.y = this.getY();
         player.scale.x = this.targetSize / player.texture.width;
         player.scale.y = this.targetSize / player.texture.height;
-        player.parentGroup = game.layerPlayer;
+        player.parentGroup = this.layerGroup.layerPlayer;
+    }
+
+    showOverlay(overlay) {
+        overlay.x = this.getX();
+        overlay.y = this.getY();
+        overlay.scale.x = this.targetSize / overlay.texture.width;
+        overlay.scale.y = this.targetSize / overlay.texture.height;
+        overlay.parentGroup = this.layerGroup.layerOverlay;
     }
 }

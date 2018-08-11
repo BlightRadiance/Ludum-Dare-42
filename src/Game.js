@@ -48,15 +48,6 @@ class Game extends DragonBonesBase {
 
         this.layerBackground = new PIXI.display.Group(-1, false);
         app.stage.addChild(new PIXI.display.Layer(this.layerBackground));
-
-        this.layerStage = new PIXI.display.Group(0, false);
-        app.stage.addChild(new PIXI.display.Layer(this.layerStage));
-
-        this.layerPlayer = new PIXI.display.Group(2, false);
-        app.stage.addChild(new PIXI.display.Layer(this.layerPlayer));
-
-        this.layerHelp = new PIXI.display.Group(1, false);
-        app.stage.addChild(new PIXI.display.Layer(this.layerHelp));
     }
 
     preloadOtherResources() {
