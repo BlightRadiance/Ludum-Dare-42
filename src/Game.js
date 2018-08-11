@@ -43,7 +43,7 @@ class Game extends DragonBonesBase {
         app.stage = new PIXI.display.Stage();
         app.stage.group.enableSort = true;
 
-        this.layerUi = new PIXI.display.Group(10, false);
+        this.layerUi = new PIXI.display.Group(1000, false);
         app.stage.addChild(new PIXI.display.Layer(this.layerUi));
 
         this.layerBackground = new PIXI.display.Group(-1, false);

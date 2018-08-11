@@ -16,6 +16,8 @@ class Cell {
         this.currentY = 0.0;
         this.targetSize = 1024;
         
+        this.fallV = 0.0;
+        this.fallA = 2000.0;
         this.fallingTime = 0.0;
         this.fallingTimeMax = 2.0;
 
@@ -50,7 +52,8 @@ class Cell {
                 this.updatePosition();
             break;
             case CellState.Falling:
-                this.offsetY += 30 * dt;
+                this.fallV += this.fallA * dt;
+                this.offsetY += this.fallV * dt;
                 this.updatePosition();
                 this.fallingTime += dt;
                 if (this.fallingTime > this.fallingTimeMax) {
