@@ -5,8 +5,8 @@ var GameStates = Object.freeze({
     "Gameover": 3, 
 })
 
-var FieldWidth = 6;
-var FieldHeight = 9;
+var FieldWidth = 8;
+var FieldHeight = 8;
 
 class State {
     constructor() {
@@ -14,7 +14,8 @@ class State {
         this.state = GameStates.Play;
         this.stage = new Stage();
         this.overlay = new Overlay();
-        this.currentCell = undefined;
+        this.mouseOverCell = undefined;
+        this.selectedCell = undefined;
     }
 
     init() {
@@ -24,10 +25,8 @@ class State {
 
     update(dt) {
         this.stage.update(dt);
-
-        this.stage.clearLayer(1);
         if (this.currentCell) {
-            this.overlay.drawOverlay(this.currentCell);
+            this.overlay.drawOverlay(this.currentCell, this.selectedCell, movePattern);
         } else {
             this.overlay.hideOverlay();
         }
@@ -42,6 +41,10 @@ class State {
     }
 
     onCellDown(/** @type {Cell} */ cell) {
+        if (cell.layers[2]) {
+            this.selectedCell = cell;
+        }
+        this.overlay.apply(this.currentCell, this.selectedCell, movePattern);
         //app.stage.removeChildren();
         //this.stage.setupPayingField(FieldWidth + 1, FieldHeight + 1);
         //console.log("down " + cell.row + "; " + cell.column)
@@ -53,13 +56,11 @@ class State {
     
     onCellOver(/** @type {Cell} */ cell) {
         this.currentCell = cell;
-        this.overlay.onCellOver(cell);
-        //console.log("over " + cell.row + "; " + cell.column)
+        console.log("over " + cell.row + "; " + cell.column)
     }
 
     onCellOut(/** @type {Cell} */ cell) {
         this.currentCell = undefined;
-        this.overlay.onCellOut(cell);
         //console.log("out " + cell.row + "; " + cell.column)
     }
 }
