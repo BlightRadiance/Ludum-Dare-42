@@ -5,8 +5,8 @@ var GameStates = Object.freeze({
     "Gameover": 3, 
 })
 
-var FieldWidth = 4;
-var FieldHeight = 6;
+var FieldWidth = 6;
+var FieldHeight = 9;
 
 class State {
     constructor() {
@@ -24,6 +24,13 @@ class State {
 
     update(dt) {
         this.stage.update(dt);
+
+        this.stage.clearLayer(1);
+        if (this.currentCell) {
+            this.overlay.drawOverlay(this.currentCell);
+        } else {
+            this.overlay.hideOverlay();
+        }
     }
     
     setupPayingField() {
@@ -35,6 +42,8 @@ class State {
     }
 
     onCellDown(/** @type {Cell} */ cell) {
+        //app.stage.removeChildren();
+        //this.stage.setupPayingField(FieldWidth + 1, FieldHeight + 1);
         //console.log("down " + cell.row + "; " + cell.column)
     }
 

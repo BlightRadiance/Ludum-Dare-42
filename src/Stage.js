@@ -52,6 +52,12 @@ class Stage {
 
     }
 
+    clearLayer(layer) {
+        for (var i = 0; i < this.cells.length; ++i) {
+            this.cells[i].layers[layer] = undefined;
+        }
+    }
+
     update(dt) {
         for (var row = 0; row < this.cellsRowsCount; ++row) {
             for (var column = 0; column < this.cellsColumnsCount; ++column) {
