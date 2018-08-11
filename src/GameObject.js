@@ -10,5 +10,7 @@ class GameObject {
         this.type = type;
     }
 
-
+    setCell(row, column) {
+        state.stage.getCell(row, column).show(this.graphics, 2);
+    }
 }

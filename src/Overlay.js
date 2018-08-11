@@ -74,7 +74,7 @@ class Overlay {
                     console.log(target.column + " " + target.row);
                     if (column >= 0 && column < state.stage.cellsColumnsCount) {
                         if (row >= 0 && row < state.stage.cellsRowsCount) {
-                            var cell = state.stage.cells[state.stage.getIndex(row, column)];
+                            var cell = state.stage.getCell(row, column);
                             app.stage.addChild(sprite);
                             this.sprites.push(sprite);
                             cell.show(sprite, 1);

@@ -58,10 +58,14 @@ class Stage {
         }
     }
 
+    getCell(row, column) {
+        return this.cells[this.getIndex(row, column)];
+    }
+
     update(dt) {
         for (var row = 0; row < this.cellsRowsCount; ++row) {
             for (var column = 0; column < this.cellsColumnsCount; ++column) {
-                this.cells[this.getIndex(row, column)].update(dt);
+                this.getCell(row, column).update(dt);
             }
         }
     }

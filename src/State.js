@@ -21,6 +21,12 @@ class State {
     init() {
         this.setupPayingField();
         this.overlay.init();
+
+        var player = PIXI.Sprite.fromImage('player')
+        player.anchor.set(0.5, 0.7);
+        app.stage.addChild(player);
+        this.player = new GameObject(player, GameObjectType.Player);
+        this.player.setCell(0, 0);
     }
 
     update(dt) {
