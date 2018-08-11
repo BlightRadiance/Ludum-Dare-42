@@ -36,11 +36,13 @@ class Stage {
             for (var column = 0; column < width; ++column) {
                 var land1 = PIXI.Sprite.fromImage('land1')
                 land1.anchor.set(0.5);
+                land1.rotation = -Math.PI / 4.0;
                 app.stage.addChild(land1);
 
                 var index = this.getIndex(row, column);
                 this.cells[index] = new Cell(column, row, land1, layers);
-                this.cells[index].setPosition(this.getCellXPosition(column), this.getCellYPosition(row));
+                this.cells[index].setPosition(this.getCellXPosition(row, column),
+                                              this.getCellYPosition(row, column));
                 this.cells[index].setSize(this.targetCellSize);
             }
         }
@@ -62,15 +64,21 @@ class Stage {
         return row * this.cellsColumnsCount + column;
     }
 
-    getCellXPosition(column) {
-        return column * this.targetCellSize 
-        - (this.cellsColumnsCount * this.targetCellSize / 2.0)
-        + this.targetCellSize / 2.0;
+    getCellXPosition(row, column) {
+        var overridenSize = this.targetCellSize * 1.3;
+        var offset = overridenSize / 2.0;
+        if (row % 2 == 1) {
+            offset *= 0;
+        } 
+        return column * overridenSize
+        - (this.cellsColumnsCount * overridenSize / 2.0)
+        + overridenSize / 2.0 + offset - overridenSize / 4.0;
     }
 
-    getCellYPosition(row) {
-        return row * this.targetCellSize 
-        - (this.cellsRowsCount * this.targetCellSize / 2.0)
-        + this.targetCellSize / 2.0;
+    getCellYPosition(row, column) {
+        var overridenSize = this.targetCellSize * 1.3;
+        return row * (overridenSize / 2.0) 
+        - (this.cellsRowsCount * overridenSize / 3.5)
+        + overridenSize / 2.0;
     }
 }

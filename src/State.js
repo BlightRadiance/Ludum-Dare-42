@@ -5,8 +5,8 @@ var GameStates = Object.freeze({
     "Gameover": 3, 
 })
 
-var FieldWidth = 5;
-var FieldHeight = 5;
+var FieldWidth = 4;
+var FieldHeight = 6;
 
 class State {
     constructor() {
