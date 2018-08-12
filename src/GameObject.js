@@ -70,15 +70,11 @@ class GameObject {
         console.log("On AI move");
         var self = this;
         this.showAiOverlay();
-        setTimeout(() => {
-            switch (this.aiType) {
-                case AiType.Rush:
-                    this.rush();
-                break;
-            }
-            this.hideAiOverlay();
-            state.onAiMoveFinished();
-        }, 1000 / state.level.enemyCount);
+        switch (this.aiType) {
+            case AiType.Rush:
+                this.rush();
+            break;
+        }
     }
 
     showAiOverlay() {
@@ -94,15 +90,29 @@ class GameObject {
                 this.attackPatten = rushAiAttackPattern;
             break;
         }
-
         this.moveOverlay.drawOverlay(this.currentCell, this.movePattern, Action.None);
     }
 
+    delayedFinishAiTurn(action) {
+        setTimeout(() => {
+            action();
+            this.hideAiOverlay();
+            state.onAiMoveFinished();
+        }, 1000 / state.level.enemyCount);
+    }
+
     rush() {
+        var self = this;
         var playerCell = state.level.playerObject.currentCell;
         if (this.attackOverlay.isWithin(playerCell, this.currentCell, this.attackMovePatten)) {
+            this.moveOverlay.drawOverlay(this.currentCell, this.attackMovePatten, Action.None);
+            this.attackOverlay.drawOverlay(playerCell, this.attackPatten, Action.Fire)
             // Can attack player
-            return;
+            this.delayedFinishAiTurn(() => {
+                if (!self.attackOverlay.apply(playerCell, playerCell, self.attackPatten, Action.Fire)) {
+                    console.log("Unexpected: Ai tried to attack row: " + playerCell.column + "; column: " + playerCell.row + ". And failed!");
+                }
+            });
         } else {
             // Try to move to player's cell
             var dirX = playerCell.column - this.currentCell.column;
@@ -114,11 +124,14 @@ class GameObject {
                 dirY /= Math.abs(dirY);
             }
             var targetCell = state.stage.getCell(this.currentCell.row + dirY, this.currentCell.column + dirX);
-            if (targetCell && this.moveOverlay.isWithin(targetCell, this.currentCell, this.movePattern)) {
+            if (targetCell && this.moveOverlay.isWithin(targetCell, this.currentCell, this.movePattern)
+                && targetCell.state == CellState.Ok) {
                 // Can move in player's direction
-                if (!this.moveOverlay.apply(this.currentCell, targetCell, this.movePattern)) {
-                    console.log("Unexpected: Ai tried to move to row: " + (this.currentCell.column + dirY) + "; column: " + (this.currentCell.row + dirX) + ". And failed!");
-                }
+                this.delayedFinishAiTurn(() => {
+                    if (!self.moveOverlay.apply(self.currentCell, targetCell, self.movePattern, Action.None)) {
+                        console.log("Unexpected: Ai tried to move to row: " + (self.currentCell.column + dirY) + "; column: " + (self.currentCell.row + dirX) + ". And failed!");
+                    }
+                });
             }
         }
     }

@@ -134,7 +134,7 @@ class Overlay {
     }
 
     isWithin(/** @type {Cell} */ cell, /** @type {Cell} */ target, pattern, action) {
-        if (this.sprites.length == 0 || !target || !cell) {
+        if (!target || !cell) {
             return;
         }
         // Find center

@@ -59,12 +59,8 @@ class State {
         this.text.anchor.set(0);
         this.text.parentGroup = this.layerUi;
         this.text.y = -this.camera.targetScreenSize / 2.0 + 50;
-        this.text.x = this.camera.targetScreenSize / 2.0 - 350;
+        this.text.x = this.camera.targetScreenSize / 2.0 - 300;
         app.stage.addChild(this.text);
-    }
-
-    setupObjects() {
-
     }
 
     initUi() {
@@ -183,9 +179,9 @@ class State {
         for (var i = this.currentEnemyObjectIndex + 1; i < this.level.gameObjects.length; ++i) {
             var obj = this.level.gameObjects[i];
             if (obj.type == GameObjectType.AI) {
-                obj.onAiMove();
                 this.lastSelectedAi = obj;
                 this.currentEnemyObjectIndex = i;
+                obj.onAiMove();
             }
         }
     }
@@ -295,11 +291,13 @@ class State {
             } else if (action == Action.Jump) {
                 this.jump(cell);
             } else if (action == Action.Fire) {
-                this.fire(cell);
+                this.fire(this.selectedCell, cell);
             }
         } else if (this.state == GameStates.AiTurn) {
             if (command == 1) {
                 this.lastSelectedAi.currentCell.layers[2].setCell(cell.row, cell.column);
+            } else if (action == Action.Fire) {
+                this.fire(this.lastSelectedAi.currentCell, cell);
             }
         } else {
             console.log("Player not selected -> unexpected")
@@ -307,18 +305,17 @@ class State {
         this.moveToNextState();
     }
 
-    fire(/** @type {Cell} */ cell) {
-        var dirX = cell.column - this.selectedCell.column;
-        var dirY = cell.row - this.selectedCell.row;
-        if (Math.abs(dirY) > Math.abs(dirX)) {
-            dirY /= Math.abs(dirY);
-            dirX = 0;
-        } else {
+    fire(/** @type {Cell} */ fromCell, /** @type {Cell} */ toCell) {
+        var dirX = toCell.column - fromCell.column;
+        var dirY = toCell.row - fromCell.row;
+        if (dirX != 0) {
             dirX /= Math.abs(dirX);
-            dirY = 0;
         }
-        this.spash(dirX, dirY, cell);
-        cell.state = CellState.Falling;
+        if (dirY != 0) {
+            dirY /= Math.abs(dirY);
+        }
+        this.spash(dirX, dirY, toCell);
+        toCell.state = CellState.Falling;
     }
 
     jump(/** @type {Cell} */ cell) {
@@ -332,6 +329,7 @@ class State {
     spash(dirX, dirY, cell) {
         if (cell && cell.layers[2]) {
             switch (cell.layers[2].type) {
+                case GameObjectType.Player:
                 case GameObjectType.AI:
                     var newColumn = cell.column + dirX;
                     var newRow = cell.row + dirY;
