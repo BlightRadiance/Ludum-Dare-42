@@ -385,6 +385,7 @@ class State {
     }
 
     onCellDown(/** @type {Cell} */ cell) {
+        this.currentCell = cell;
         switch (this.actionMode) {
             case Action.None:
                 this.tryToMove(cell);
