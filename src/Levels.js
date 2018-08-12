@@ -58,10 +58,18 @@ class Level {
     }
 
     setupPlayer(row, column) {
-        var playerSprite1 = PIXI.Sprite.fromImage('player')
-        playerSprite1.anchor.set(0.5, 0.7);
-        app.stage.addChild(playerSprite1);
-        var playerObject1 = new GameObject(playerSprite1, GameObjectType.Player);
+        var factory = dragonBones.PixiFactory.factory;
+        factory.parseDragonBonesData(game.pixiResources["resource/player/ld_player_ske.json"].data);
+        factory.parseTextureAtlasData(game.pixiResources["resource/player/ld_player_tex.json"].data, game.pixiResources["resource/player/ld_player_tex.png"].texture);
+
+        this.armatureDisplay = factory.buildArmatureDisplay("Armature", "ld_player");
+        this.armatureDisplay.animation.play("idle", 0);
+        this.armatureDisplay.x = 0.0;
+        this.armatureDisplay.y = 0.0;
+        this.armatureDisplay.scale.x = 0.8;
+        this.armatureDisplay.scale.y = 0.8;
+        app.stage.addChild(this.armatureDisplay);
+        var playerObject1 = new GameObject(this.armatureDisplay, GameObjectType.Player);
         playerObject1.setCell(row, column);
         this.gameObjects.push(playerObject1);
         this.playerObject = playerObject1;

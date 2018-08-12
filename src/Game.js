@@ -7,8 +7,8 @@ class Game extends DragonBonesBase {
     }
 
     pushDragonBonesResources() {
-        /*this.resources.push(
-            "resource/dragon/1.json", "resource/dragon/2.json", "resource/dragon/3.png");*/
+        this.resources.push(
+            "resource/player/ld_player_ske.json", "resource/player/ld_player_tex.json", "resource/player/ld_player_tex.png");
     }
 
     init() {

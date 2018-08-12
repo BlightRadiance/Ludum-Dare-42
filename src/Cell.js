@@ -118,8 +118,8 @@ class Cell {
         graphics.x = this.getX();
         graphics.y = this.getY();
         var aspectRatio = graphics.texture.height / graphics.texture.width;
-        graphics.scale.x = this.targetSize / graphics.texture.width;
-        graphics.scale.y = this.targetSize * aspectRatio / graphics.texture.height;
+        //graphics.scale.x = this.targetSize / graphics.texture.width;
+        //graphics.scale.y = this.targetSize * aspectRatio / graphics.texture.height;
         switch (layer) {
             case 1:
             graphics.parentGroup = this.layerGroup.layerHelp;
