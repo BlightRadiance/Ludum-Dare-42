@@ -68,7 +68,12 @@ class State {
 
     initUi() {
         var self = this;
-        this.jumpButton = PIXI.Sprite.fromImage('button_jump')
+
+        this.jumpTexture = PIXI.Texture.fromImage('button_jump');
+        this.fireTexture = PIXI.Texture.fromImage('button_fire');
+        this.cancelTexture = PIXI.Texture.fromImage('button_cancel');
+
+        this.jumpButton = new PIXI.Sprite(this.jumpTexture);
         this.jumpButton.anchor.set(0.5);
         app.stage.addChild(this.jumpButton);
         this.jumpButton.interactive = true;
@@ -79,7 +84,7 @@ class State {
             self.onAction(Action.Jump);
         });
 
-        this.fireButton = PIXI.Sprite.fromImage('button_fire')
+        this.fireButton = new PIXI.Sprite(this.fireTexture);
         this.fireButton.anchor.set(0.5);
         app.stage.addChild(this.fireButton);
         this.fireButton.interactive = true;
@@ -142,6 +147,14 @@ class State {
             return;
         }
         if (this.actionMode == action) {
+            switch (action) {
+                case Action.Fire:
+                    this.fireButton.texture = this.fireTexture;
+                break;
+                case Action.Jump:
+                    this.jumpButton.texture = this.jumpTexture;
+                break;
+            }
             this.actionMode = Action.None;
         } else {
             this.actionMode = action;
@@ -149,10 +162,14 @@ class State {
                 case Action.Fire:
                     this.attackPattern = attackPattern;
                     this.attackMovePattern = attackMovePattern;
+                    this.fireButton.texture = this.cancelTexture;
+                    this.jumpButton.texture = this.jumpTexture;
                 break;
                 case Action.Jump:
                     this.attackPattern = jumpPattern;
                     this.attackMovePattern = jumpMovePattern;
+                    this.jumpButton.texture = this.cancelTexture;
+                    this.fireButton.texture = this.fireTexture;
                 break;
             }
         }
@@ -208,6 +225,8 @@ class State {
                 this.fireButton.visible = true;
                 this.jumpButton.interactive = true;
                 this.jumpButton.visible = true;
+                this.fireButton.texture = this.fireTexture;
+                this.jumpButton.texture = this.jumpTexture;
             break;
             case GameStates.AiTurn:
                 this.aiTurnsLeft = this.level.enemyCount;
