@@ -69,8 +69,29 @@ class GameObject {
     onAiMove() {
         console.log("On AI move");
         var self = this;
+        this.showAiOverlay();
         setTimeout(() => {
+            switch (this.aiType) {
+                case AiType.Rush:
+                    this.rush();
+                break;
+            }
+            this.hideAiOverlay();
             state.onAiMoveFinished();
         }, 1000 / state.level.enemyCount);
+    }
+
+    showAiOverlay() {
+        this.moveOverlay = new Overlay(OverlayType.Move);
+        this.attackOverlay = new Overlay(OverlayType.Attack);
+    }
+
+    rush() {
+        var playerCell = state.level.playerObject.currentCell;
+    }
+
+    hideAiOverlay() {
+        this.moveOverlay.hideOverlay();
+        this.attackOverlay.hideOverlay();
     }
 }

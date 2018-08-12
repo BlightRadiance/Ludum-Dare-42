@@ -41,8 +41,6 @@ class State {
         this.initLayers();
         this.setupText();
         this.level.setupLevel(this.currentLevel)
-        this.moveOverlay.init();
-        this.attackOverlay.init();
         this.initUi();
         this.moveToState(GameStates.Play);
         onResizeWindow();

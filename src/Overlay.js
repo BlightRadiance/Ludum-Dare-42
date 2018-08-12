@@ -14,12 +14,12 @@ var OverlayType = Object.freeze({
  6 - push down
 */
 
+// Player
 var movePattern = [
     [1, 1, 1],
     [1, -1, 1],
     [1, 1, 1],
 ];
-
 var attackPattern = [
     [2],
 ];
@@ -43,13 +43,25 @@ var attackMovePattern = [
     [0, 0, 1, 0, 0],
 ];
 
+// Rush Ai
+var rushAiMovePattern = [
+    [1, 1, 1],
+    [1, -1, 1],
+    [1, 1, 1],
+];
+var rushAiAttackMovePattern = [
+    [1, 1, 1],
+    [1, -1, 1],
+    [1, 1, 1],
+];
+var rushAiAttackPattern = [
+    [2],
+];
+
 class Overlay {
     constructor(type) {
         this.type = type;
         this.sprites = new Array();
-    }
-
-    init() {
     }
 
     drawOverlay(/** @type {Cell} */ target, pattern, action) {
