@@ -36,8 +36,8 @@ class Level {
             case 4:
             state.stage.setupPayingField(10, 10);
             this.setupPlayer(2, 2);
-            this.setupAi(2, 3, AiType.Rush);
-            this.setupAi(3, 2, AiType.Rush);
+            this.setupAi(5, 3, AiType.Rush);
+            this.setupAi(3, 5, AiType.Rush);
             this.setupAi(8, 4, AiType.Range);
             this.setupAi(4, 8, AiType.Range);
             break;
@@ -48,6 +48,7 @@ class Level {
             this.setupAi(2, 4, AiType.Rush);
             this.setupAi(5, 5, AiType.Rush);
             this.setupAi(4, 2, AiType.Rush);
+            this.setupAi(3, 3, AiType.Rush);
             this.setupAi(4, 4, AiType.Range);
             break;
             default:

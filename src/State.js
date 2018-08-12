@@ -17,7 +17,7 @@ var Action = Object.freeze({
 class State {
     constructor() {
         this.paused = false;
-        this.state = GameStates.Play;
+        this.state = GameStates.Tutorial;
         this.stage = new Stage();
         
         this.moveOverlay = new Overlay(OverlayType.Move);
@@ -38,6 +38,7 @@ class State {
         this.currentLevel = 0;
 
         this.reseting = false;
+        this.tutorialShown = false;
     }
 
     init() {
@@ -45,7 +46,11 @@ class State {
         this.setupText();
         this.level.setupLevel(this.currentLevel)
         this.initUi();
-        this.moveToState(GameStates.Play);
+        if (!this.tutorialShown) {
+            this.moveToState(GameStates.Tutorial);
+        } else {
+            this.moveToState(GameStates.Play);
+        }
         onResizeWindow();
     }
 
@@ -57,7 +62,7 @@ class State {
             strokeThickness: 2,
             align: 'center',
         });
-        this.text = new PIXI.Text('TESETETSTSET', style);
+        this.text = new PIXI.Text('', style);
         this.text.x = 0;
         this.text.y = 0;
         this.text.anchor.set(0);
@@ -73,6 +78,21 @@ class State {
         this.jumpTexture = PIXI.Texture.fromImage('button_jump');
         this.fireTexture = PIXI.Texture.fromImage('button_fire');
         this.cancelTexture = PIXI.Texture.fromImage('button_cancel');
+
+        this.tutorial = PIXI.Sprite.fromImage('tut')
+        this.tutorial.anchor.set(0.5);
+        app.stage.addChild(this.tutorial);
+        this.tutorial.interactive = true;
+        this.tutorial.buttonMode = true;
+        this.tutorial.parentGroup =  this.layerTutorial;
+        this.tutorial.scale.x = this.camera.targetScreenSize / this.tutorial.width;
+        this.tutorial.scale.y = this.camera.targetScreenSize / this.tutorial.height;
+        this.tutorial.visible = !this.tutorialShown;
+        this.tutorial.on('pointerup', () => {
+            this.tutorialShown = true;
+            self.moveToState(GameStates.Play)
+            this.tutorial.visible = false;
+        });
 
         this.jumpButton = new PIXI.Sprite(this.jumpTexture);
         this.jumpButton.anchor.set(0.5);
@@ -98,7 +118,7 @@ class State {
             self.onAction(Action.Fire);
         });
 
-        this.restartButton = PIXI.Sprite.fromImage('button_restart')
+        this.restartButton = PIXI.Sprite.fromImage('button_restart');
         this.restartButton.anchor.set(0.5);
         app.stage.addChild(this.restartButton);
         this.restartButton.x = -this.camera.targetScreenSize / 2.0 + this.jumpButton.width / 1.5;
@@ -142,6 +162,9 @@ class State {
 
         this.layerUi = new PIXI.display.Group(1000, false);
         app.stage.addChild(new PIXI.display.Layer(this.layerUi));
+
+        this.layerTutorial = new PIXI.display.Group(1001, false);
+        app.stage.addChild(new PIXI.display.Layer(this.layerTutorial));
 
         this.layerBackground = new PIXI.display.Group(-1, false);
         app.stage.addChild(new PIXI.display.Layer(this.layerBackground));
@@ -285,10 +308,10 @@ class State {
     moveToNextState() {
         switch(this.state) {
             case GameStates.Play: this.moveToState(GameStates.AiTurn); break;
-            case GameStates.AiTurn: this.moveToState( GameStates.Play); break;
-            case GameStates.Tutorial: this.moveToState( GameStates.Play); break;
-            case GameStates.Gameover: this.moveToState( GameStates.Play); break;
-            case GameStates.Win: this.moveToState( GameStates.Play); break;
+            case GameStates.AiTurn: this.moveToState(GameStates.Play); break;
+            case GameStates.Tutorial: this.moveToState(GameStates.Tutorial); break; // Allow only manual change
+            case GameStates.Gameover: this.moveToState(GameStates.Play); break;
+            case GameStates.Win: this.moveToState(GameStates.Play); break;
         }
     }
 

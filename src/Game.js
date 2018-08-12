@@ -53,6 +53,7 @@ class Game extends DragonBonesBase {
         PIXI.loader.add('button_jump', "resource/button_jump.png");
         PIXI.loader.add('button_next', "resource/button_next.png");
         PIXI.loader.add('button_restart', "resource/button_restart.png");
+        PIXI.loader.add('tut', "resource/tut.png");
     }
 
     resize() {
