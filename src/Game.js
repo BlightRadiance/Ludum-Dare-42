@@ -9,6 +9,10 @@ class Game extends DragonBonesBase {
     pushDragonBonesResources() {
         this.resources.push(
             "resource/player/ld_player_ske.json", "resource/player/ld_player_tex.json", "resource/player/ld_player_tex.png");
+        this.resources.push(
+            "resource/rush/ld_rush_ske.json", "resource/rush/ld_rush_tex.json", "resource/rush/ld_rush_tex.png");
+        this.resources.push(
+            "resource/range/ld_range_ske.json", "resource/range/ld_range_tex.json", "resource/range/ld_range_tex.png");
     }
 
     init() {
@@ -63,6 +67,14 @@ class Game extends DragonBonesBase {
     }
 
     onLoaded() {
+        var factory = dragonBones.PixiFactory.factory;
+        factory.parseDragonBonesData(game.pixiResources["resource/player/ld_player_ske.json"].data);
+        factory.parseTextureAtlasData(game.pixiResources["resource/player/ld_player_tex.json"].data, game.pixiResources["resource/player/ld_player_tex.png"].texture);
+        factory.parseDragonBonesData(game.pixiResources["resource/rush/ld_rush_ske.json"].data);
+        factory.parseTextureAtlasData(game.pixiResources["resource/rush/ld_rush_tex.json"].data, game.pixiResources["resource/rush/ld_rush_tex.png"].texture);
+        factory.parseDragonBonesData(game.pixiResources["resource/range/ld_range_ske.json"].data);
+        factory.parseTextureAtlasData(game.pixiResources["resource/range/ld_range_tex.json"].data, game.pixiResources["resource/range/ld_range_tex.png"].texture);
+
         state.init();
 
         PIXI.ticker.shared.add((dt) => {

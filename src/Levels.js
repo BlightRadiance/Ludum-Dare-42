@@ -59,17 +59,14 @@ class Level {
 
     setupPlayer(row, column) {
         var factory = dragonBones.PixiFactory.factory;
-        factory.parseDragonBonesData(game.pixiResources["resource/player/ld_player_ske.json"].data);
-        factory.parseTextureAtlasData(game.pixiResources["resource/player/ld_player_tex.json"].data, game.pixiResources["resource/player/ld_player_tex.png"].texture);
-
-        this.armatureDisplay = factory.buildArmatureDisplay("Armature", "ld_player");
-        this.armatureDisplay.animation.play("idle", 0);
-        this.armatureDisplay.x = 0.0;
-        this.armatureDisplay.y = 0.0;
-        this.armatureDisplay.scale.x = 0.8;
-        this.armatureDisplay.scale.y = 0.8;
-        app.stage.addChild(this.armatureDisplay);
-        var playerObject1 = new GameObject(this.armatureDisplay, GameObjectType.Player);
+        var armatureDisplay = factory.buildArmatureDisplay("Armature", "ld_player");
+        armatureDisplay.animation.play("idle", 0);
+        armatureDisplay.x = 0.0;
+        armatureDisplay.y = 0.0;
+        armatureDisplay.scale.x = 0.8;
+        armatureDisplay.scale.y = 0.8;
+        app.stage.addChild(armatureDisplay);
+        var playerObject1 = new GameObject(armatureDisplay, GameObjectType.Player);
         playerObject1.setCell(row, column);
         this.gameObjects.push(playerObject1);
         this.playerObject = playerObject1;
@@ -77,12 +74,31 @@ class Level {
 
     setupAi(row, column, aiType) {
         this.enemyCount += 1;
-        var playerSprite2 = PIXI.Sprite.fromImage('player')
-        playerSprite2.anchor.set(0.5, 0.7);
-        app.stage.addChild(playerSprite2);
-        var playerObject2 = new GameObject(playerSprite2, GameObjectType.AI, aiType);
-        playerObject2.setCell(row, column);
-        this.gameObjects.push(playerObject2);
+        var armatureDisplay = undefined;
+        switch (aiType) {
+            case AiType.Rush:
+                var factory = dragonBones.PixiFactory.factory;      
+                armatureDisplay = factory.buildArmatureDisplay("Rush", "ld_rush");
+                armatureDisplay.animation.play("idle", 0);
+                armatureDisplay.x = 0.0;
+                armatureDisplay.y = 0.0;
+                armatureDisplay.scale.x = 0.8;
+                armatureDisplay.scale.y = 0.8;
+            break;
+            case AiType.Range:
+                var factory = dragonBones.PixiFactory.factory;
+                armatureDisplay = factory.buildArmatureDisplay("Range", "ld_range");
+                armatureDisplay.animation.play("idle", 0);
+                armatureDisplay.x = 0.0;
+                armatureDisplay.y = 0.0;
+                armatureDisplay.scale.x = 0.8;
+                armatureDisplay.scale.y = 0.8;
+            break;
+        }
+        app.stage.addChild(armatureDisplay);
+        var enemy = new GameObject(armatureDisplay, GameObjectType.AI, aiType);
+        enemy.setCell(row, column);
+        this.gameObjects.push(enemy);
     }
 
     setupRadndom() {

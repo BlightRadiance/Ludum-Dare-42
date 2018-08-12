@@ -111,15 +111,18 @@ class Cell {
         var graphics;
         if (layer == 2) {
             graphics = object.graphics;
+            var aspectRatio = 384.0 / 256.0;
+            graphics.scale.x = this.targetSize / 256.0;
+            graphics.scale.y = this.targetSize * aspectRatio / 384.0;
         } else {
             graphics = object;
+            var aspectRatio = graphics.texture.height / graphics.texture.width;
+            graphics.scale.x = this.targetSize / graphics.texture.width;
+            graphics.scale.y = this.targetSize * aspectRatio / graphics.texture.height;
         }
 
         graphics.x = this.getX();
         graphics.y = this.getY();
-        var aspectRatio = graphics.texture.height / graphics.texture.width;
-        //graphics.scale.x = this.targetSize / graphics.texture.width;
-        //graphics.scale.y = this.targetSize * aspectRatio / graphics.texture.height;
         switch (layer) {
             case 1:
             graphics.parentGroup = this.layerGroup.layerHelp;
