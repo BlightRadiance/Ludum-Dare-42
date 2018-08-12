@@ -37,7 +37,14 @@ class GameObject {
         }
         if (remove) {
             app.stage.removeChild(this.graphics);
-            state.moveToState(GameStates.Gameover);
+            switch (this.type) {
+                case GameObjectType.Player:
+                    state.onPlayerDropped();
+                break;
+                case GameObjectType.AI:
+                    state.onEnemyDropped();
+                break;
+            }
         }
     }
 
@@ -47,7 +54,7 @@ class GameObject {
             this.graphics.y += this.fallV * dt;
             this.fallingTime += dt;
             if (this.fallingTime > this.fallingTimeMax) {
-                state.onCellDropped(this.currentCell);
+                state.onGameObjectDropped(this);
                 this.falling = false;
             }
         }

@@ -221,9 +221,23 @@ class State {
 
     onCellDropped(/** @type {Cell} */ cell) {
         if (cell && cell.layers[2]) {
-            console.log("Drop: " + cell.layers[2]);
-            cell.layers[2].unmanage(true);
-            
+            this.onGameObjectDropped(cell.layers[2]);
+        }
+    }
+
+    onGameObjectDropped(/** @type {GameObject} */ obj) {
+        console.log("Drop: " + obj);
+        obj.unmanage(true);
+    }
+
+    onPlayerDropped() {
+        state.moveToState(GameStates.Gameover);
+    }
+
+    onEnemyDropped() {
+        this.level.enemyCount -= 1;
+        if (this.level.enemyCount <= 0) {
+            this.moveToState(GameStates.Win);
         }
     }
 
