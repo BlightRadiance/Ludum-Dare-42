@@ -131,7 +131,7 @@ class State {
     }
 
     reinit() {
-        this.currentEnemyObjectIndex = 0;
+        this.nextEnemyObjectIndex = 0;
         app.stage.removeChildren();
         this.level.setupLevel(this.currentLevel);
         this.init();
@@ -161,7 +161,7 @@ class State {
             break;
             case GameStates.AiTurn:
                 this.aiTurnsLeft = this.level.enemyCount;
-                this.currentEnemyObjectIndex = 0;
+                this.nextEnemyObjectIndex = 0;
                 this.text.text = "Enemy's turn";
                 this.doAiMove();
             break;
@@ -176,22 +176,27 @@ class State {
     }
 
     doAiMove() {
-        for (var i = this.currentEnemyObjectIndex + 1; i < this.level.gameObjects.length; ++i) {
+        for (var i = this.nextEnemyObjectIndex; i < this.level.gameObjects.length; ++i) {
             var obj = this.level.gameObjects[i];
             if (obj.type == GameObjectType.AI) {
                 this.lastSelectedAi = obj;
-                this.currentEnemyObjectIndex = i;
+                this.nextEnemyObjectIndex = i + 1;
                 obj.onAiMove();
+                return;
             }
         }
+        // No more enemies
+        this.moveToNextState();
     }
 
-    onAiMoveFinished() {
+    onAiMoveFinished(success) {
         console.log("onAiMoveFinished")
-        this.aiTurnsLeft -= 1;
+        if (success) {
+            this.aiTurnsLeft -= 1;
+        }
         if (this.aiTurnsLeft <= 0) {
             // Player might lose already
-            if (this.state == GameStates .AiTurn) {
+            if (this.state == GameStates.AiTurn) {
                 this.moveToNextState();
             }
         } else {
@@ -254,6 +259,7 @@ class State {
 
     onEnemyDropped() {
         this.level.enemyCount -= 1;
+        this.aiTurnsLeft -= 1;
         if (this.level.enemyCount <= 0) {
             this.moveToState(GameStates.Win);
         }
@@ -285,6 +291,7 @@ class State {
     }
 
     applyAction(/** @type {Cell} */ cell, command, action) {
+        // If player's turn
         if (this.selectedCell) {
             if (command == 1) {
                 this.selectedCell.layers[2].setCell(cell.row, cell.column);
@@ -293,6 +300,7 @@ class State {
             } else if (action == Action.Fire) {
                 this.fire(this.selectedCell, cell);
             }
+            this.moveToNextState();
         } else if (this.state == GameStates.AiTurn) {
             if (command == 1) {
                 this.lastSelectedAi.currentCell.layers[2].setCell(cell.row, cell.column);
@@ -302,7 +310,6 @@ class State {
         } else {
             console.log("Player not selected -> unexpected")
         }
-        this.moveToNextState();
     }
 
     fire(/** @type {Cell} */ fromCell, /** @type {Cell} */ toCell) {
@@ -314,19 +321,19 @@ class State {
         if (dirY != 0) {
             dirY /= Math.abs(dirY);
         }
-        this.spash(dirX, dirY, toCell);
+        this.splash(dirX, dirY, toCell);
         toCell.state = CellState.Falling;
     }
 
     jump(/** @type {Cell} */ cell) {
         this.selectedCell.layers[2].setCell(cell.row, cell.column);
-        this.spash(-1, 0, this.stage.getCell(cell.row, cell.column - 1));
-        this.spash(1, 0, this.stage.getCell(cell.row, cell.column + 1));
-        this.spash(0, 1, this.stage.getCell(cell.row + 1, cell.column));
-        this.spash(0, -1, this.stage.getCell(cell.row - 1, cell.column));
+        this.splash(-1, 0, this.stage.getCell(cell.row, cell.column - 1));
+        this.splash(1, 0, this.stage.getCell(cell.row, cell.column + 1));
+        this.splash(0, 1, this.stage.getCell(cell.row + 1, cell.column));
+        this.splash(0, -1, this.stage.getCell(cell.row - 1, cell.column));
     }
 
-    spash(dirX, dirY, cell) {
+    splash(dirX, dirY, cell) {
         if (cell && cell.layers[2]) {
             switch (cell.layers[2].type) {
                 case GameObjectType.Player:
@@ -335,7 +342,9 @@ class State {
                     var newRow = cell.row + dirY;
                     var newCell = this.stage.getCell(newRow, newColumn);
                     if (newCell && newCell.state == CellState.Ok) {
-                        cell.layers[2].setCell(newRow, newColumn);
+                        if (!newCell.layers[2]) {
+                            cell.layers[2].setCell(newRow, newColumn);
+                        }
                     } else {
                         var layers = this.stage.getLayers(newRow, newColumn);
                         cell.layers[2].graphics.parentGroup = layers.layerPlayer;

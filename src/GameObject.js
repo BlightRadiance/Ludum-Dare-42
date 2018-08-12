@@ -73,7 +73,7 @@ class GameObject {
     onAiMove() {
         console.log("On AI move");
         if (!this.isMovePossible()) {
-            state.onAiMoveFinished();
+            state.onAiMoveFinished(false);
         } else {
             var self = this;
             this.showAiOverlay();
@@ -105,7 +105,7 @@ class GameObject {
         setTimeout(() => {
             action();
             this.hideAiOverlay();
-            state.onAiMoveFinished();
+            state.onAiMoveFinished(true);
         }, 1000 / state.level.enemyCount);
     }
 

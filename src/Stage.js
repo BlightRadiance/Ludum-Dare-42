@@ -57,7 +57,8 @@ class Stage {
             for (var column = 0; column < this.cellsColumnsCount; ++column) {
                 var index = this.getIndex(row, column);
                 var cell = this.cells[index];
-                if (cell.state != CellState.Ok) {
+                if (cell.state != CellState.Ok || 
+                    (cell.layers[2] && cell.layers[2].type != GameObjectType.Player)) {
                     grid.setWalkableAt(column, row, false);
                 }
             }
