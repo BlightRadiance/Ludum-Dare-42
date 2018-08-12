@@ -185,10 +185,14 @@ class GameObject {
             this.moveOverlay.drawOverlay(this.currentCell, this.attackMovePatten, Action.None);
             // Can attack player
             var targetCell = playerCell;
-            if (Math.random() < 0.7) {
+            if (Math.random() < 0.9) {
                 var dirX = getRandDir();
                 var dirY = getRandDir();
-                if (Math.random() < 0.7) {
+                if (Math.random() < 0.8) {
+                    dirX += getRandDir();
+                    dirY += getRandDir();
+                }
+                if (Math.random() < 0.5) {
                     dirX += getRandDir();
                     dirY += getRandDir();
                 }
