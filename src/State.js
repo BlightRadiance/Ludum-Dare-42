@@ -13,9 +13,6 @@ var Action = Object.freeze({
     "Jump": 3, 
 })
 
-var FieldWidth = 5;
-var FieldHeight = 5;
-
 class State {
     constructor() {
         this.paused = false;
@@ -140,6 +137,7 @@ class State {
     }
 
     reinit() {
+        this.currentEnemyObjectIndex = 0;
         app.stage.removeChildren();
         this.level.setupLevel(this.currentLevel);
         this.init();
@@ -194,6 +192,7 @@ class State {
     }
 
     onAiMoveFinished() {
+        console.log("onAiMoveFinished")
         this.aiTurnsLeft -= 1;
         if (this.aiTurnsLeft <= 0) {
             // Player might lose already

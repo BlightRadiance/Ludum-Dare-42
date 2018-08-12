@@ -5,10 +5,16 @@ var GameObjectType = Object.freeze({
     "AI": 3,
 })
 
+var AiType = Object.freeze({
+    "Rush": 1, 
+    "Range": 2, 
+})
+
 class GameObject {
-    constructor(graphics, type) {
+    constructor(graphics, type, aiType) {
         this.graphics = graphics;
         this.type = type;
+        this.aiType = aiType;
         this.currentCell = undefined;
 
         this.falling = false;

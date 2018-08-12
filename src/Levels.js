@@ -7,10 +7,11 @@ class Level {
     }
  
     setupLevel(id) {
+        this.enemyCount = 0;
         this.gameObjects = new Array();
-        state.stage.setupPayingField(FieldWidth, FieldHeight);
-        this.setupPlayer(0, 0);
-        this.setupAi(2, 2);
+        state.stage.setupPayingField(10, 10);
+        this.setupPlayer(2, 2);
+        this.setupAi(5, 5, AiType.Rush);
     }
 
     setupPlayer(row, column) {
@@ -23,12 +24,12 @@ class Level {
         this.playerObject = playerObject1;
     }
 
-    setupAi(row, column) {
+    setupAi(row, column, aiType) {
         this.enemyCount += 1;
         var playerSprite2 = PIXI.Sprite.fromImage('player')
         playerSprite2.anchor.set(0.5, 0.7);
         app.stage.addChild(playerSprite2);
-        var playerObject2 = new GameObject(playerSprite2, GameObjectType.AI);
+        var playerObject2 = new GameObject(playerSprite2, GameObjectType.AI, aiType);
         playerObject2.setCell(row, column);
         this.gameObjects.push(playerObject2);
     }
