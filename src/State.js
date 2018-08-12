@@ -96,8 +96,13 @@ class State {
         this.restartButton.interactive = true;
         this.restartButton.parentGroup =  this.layerUi;
         this.restartButton.on('pointerup', () => {
-            self.moveToState(GameStates.Gameover);
-            self.moveToNextState();
+            if (this.state == GameStates.Win) {
+                this.currentLevel += 1;
+                self.moveToNextState();
+            } else {
+                self.moveToState(GameStates.Gameover);
+                self.moveToNextState();
+            }
         });
     }
 

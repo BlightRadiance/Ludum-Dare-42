@@ -83,6 +83,7 @@ class GameObject {
             switch (this.aiType) {
                 case AiType.Rush:
                     this.rush();
+                break;
                 case AiType.Range:
                     this.range();
                 break;
@@ -141,7 +142,7 @@ class GameObject {
                 this.delayedFinishAiTurn(() => {
                     var targetCell = state.stage.getCell(path[1][1], path[1][0]);
                     if (this.canGoTo(targetCell) && !self.moveOverlay.apply(self.currentCell, targetCell, self.movePattern, Action.None)) {
-                        console.log("Unexpected: Ai tried to move to row: " + (self.currentCell.column + dirY) + "; column: " + (self.currentCell.row + dirX) + ". And failed!");
+                        console.log("Unexpected: Ai tried to move to row: " + (targetCell.column) + "; column: " + (targetCell.row) + ". And failed!");
                     }
                 });
             } else {

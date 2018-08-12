@@ -9,14 +9,52 @@ class Level {
     setupLevel(id) {
         this.enemyCount = 0;
         this.gameObjects = new Array();
-        state.stage.setupPayingField(10, 10);
-        this.setupPlayer(2, 2);
-        this.setupAi(5, 5, AiType.Range);
-        /*this.setupAi(5, 6, AiType.Rush);
-        this.setupAi(5, 7, AiType.Rush);
-        this.setupAi(6, 5, AiType.Rush);
-        this.setupAi(7, 5, AiType.Rush);*/
-        this.remomoveRandomCells(10);
+
+        switch (id) {
+            case 0:
+            state.stage.setupPayingField(4, 4);
+            this.setupPlayer(1, 1);
+            this.setupAi(3, 3, AiType.Rush);
+            break;
+            case 1:
+            state.stage.setupPayingField(4, 4);
+            this.setupPlayer(1, 1);
+            this.setupAi(2, 3, AiType.Rush);
+            this.setupAi(3, 2, AiType.Rush);
+            break;
+            case 2:
+            state.stage.setupPayingField(6, 6);
+            this.setupPlayer(1, 1);
+            this.setupAi(5, 5, AiType.Range);
+            break;
+            case 3:
+            state.stage.setupPayingField(10, 10);
+            this.setupPlayer(2, 2);
+            this.setupAi(8, 4, AiType.Range);
+            this.setupAi(4, 8, AiType.Range);
+            break;
+            case 4:
+            state.stage.setupPayingField(10, 10);
+            this.setupPlayer(2, 2);
+            this.setupAi(2, 3, AiType.Rush);
+            this.setupAi(3, 2, AiType.Rush);
+            this.setupAi(8, 4, AiType.Range);
+            this.setupAi(4, 8, AiType.Range);
+            break;
+            case 5:
+            state.stage.setupPayingField(6, 6);
+            this.setupPlayer(1, 1);
+            this.setupAi(2, 2, AiType.Rush);
+            this.setupAi(2, 4, AiType.Rush);
+            this.setupAi(5, 5, AiType.Rush);
+            this.setupAi(4, 2, AiType.Rush);
+            this.setupAi(4, 4, AiType.Range);
+            break;
+            default:
+            this.setupRadndom();
+            break;
+        }
+        this.remomoveRandomCells(state.stage.cellsColumnsCount * state.stage.cellsColumnsCount * 0.5 * Math.random());
     }
 
     setupPlayer(row, column) {

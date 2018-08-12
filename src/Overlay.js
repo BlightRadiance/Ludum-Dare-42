@@ -107,6 +107,9 @@ class Overlay {
                 var sprite = undefined;
                 switch(pattern[pattern.length - patternRow - 1][patternColumn]) {
                     case -1:
+                    sprite = PIXI.Sprite.fromImage('overlay_base')
+                    sprite.anchor.set(0.5);
+                    break;
                     case 0:
                     break;
                     case 1:
