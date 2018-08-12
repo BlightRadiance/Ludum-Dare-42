@@ -59,4 +59,8 @@ class GameObject {
             }
         }
     }
+
+    onAiMove() {
+        console.log("On AI move");
+    }
 }

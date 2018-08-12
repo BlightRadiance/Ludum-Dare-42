@@ -169,6 +169,11 @@ class State {
             break;
             case GameStates.AiTurn:
                 this.text.text = "Enemy's turn";
+                this.level.gameObjects.forEach(o => {
+                    if (o.type == GameObjectType.AI) {
+                        o.onAiMove();
+                    }
+                });
                 this.moveToNextState();
             break;
 
