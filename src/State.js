@@ -67,8 +67,8 @@ class State {
         this.text.y = 0;
         this.text.anchor.set(0);
         this.text.parentGroup = this.layerUi;
-        this.text.y = -this.camera.targetScreenSize / 2.0 + 90;
-        this.text.x = this.camera.targetScreenSize / 2.0 - 350;
+        this.text.y = -this.camera.targetScreenSize / 2.0 + 100;
+        this.text.x = this.camera.targetScreenSize / 2.0 - 330;
         app.stage.addChild(this.text);
     }
 
@@ -154,6 +154,22 @@ class State {
                 self.moveToNextState();
             }
         });
+
+        this.helpButton = PIXI.Sprite.fromImage('button_help');
+        this.helpButton.anchor.set(0.5);
+        app.stage.addChild(this.helpButton);
+        this.helpButton.x = -this.camera.targetScreenSize / 2.0 + this.jumpButton.width / 2.8;
+        this.helpButton.buttonMode = true;
+        this.helpButton.y = -this.camera.targetScreenSize / 2.0 + this.jumpButton.height * 0.8;
+        this.helpButton.interactive = true;
+        this.helpButton.parentGroup =  this.layerUi;
+        this.helpButton.scale.x = 0.5;
+        this.helpButton.scale.y = 0.5;
+        this.helpButton.on('pointerup', () => {
+            self.moveToState(GameStates.Tutorial);
+            self.tutorial.visible = true;
+        });
+
     }
 
     initLayers() {
@@ -232,6 +248,7 @@ class State {
                 this.fireButton.visible = false;
                 this.jumpButton.interactive = false;
                 this.jumpButton.visible = false;
+                this.helpButton.visible = false;
             break;
             case GameStates.Win:
                 this.restartButton.interactive = true;
@@ -255,6 +272,7 @@ class State {
                 this.jumpButton.visible = true;
                 this.fireButton.texture = this.fireTexture;
                 this.jumpButton.texture = this.jumpTexture;
+                this.helpButton.visible = true;
             break;
             case GameStates.AiTurn:
                 this.aiTurnsLeft = this.level.enemyCount;
