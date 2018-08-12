@@ -119,7 +119,7 @@ class GameObject {
             }
             this.hideAiOverlay();
             state.onAiMoveFinished(true);
-        }, 1000 / state.level.enemyCount);
+        }, Math.min(state.level.enemyCount * 1000, 4000) / state.level.enemyCount);
     }
 
     rush() {

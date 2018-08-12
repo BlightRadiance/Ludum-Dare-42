@@ -51,7 +51,7 @@ class State {
 
     setupText() {
         var style = new PIXI.TextStyle({
-            fontSize: 36,
+            fontSize: 30,
             fontWeight: 'bold',
             stroke: '#ffffff',
             strokeThickness: 5,
