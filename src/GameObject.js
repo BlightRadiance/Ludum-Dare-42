@@ -20,9 +20,9 @@ class GameObject {
         this.falling = false;
         this.dead = false;
         this.fallV = 0.0;
-        this.fallA = 1000.0;
+        this.fallA = 3000.0;
         this.fallingTime = 0.0;
-        this.fallingTimeMax = 2.0;
+        this.fallingTimeMax = 1.0;
     }
 
     setCell(row, column) {

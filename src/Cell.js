@@ -17,9 +17,9 @@ class Cell {
         this.targetSize = 1024;
         
         this.fallV = 0.0;
-        this.fallA = 2000.0;
+        this.fallA = 3000.0;
         this.fallingTime = 0.0;
-        this.fallingTimeMax = 2.0;
+        this.fallingTimeMax = 1.0;
 
         this.state = CellState.Ok;
 
