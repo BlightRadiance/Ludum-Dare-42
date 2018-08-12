@@ -37,11 +37,12 @@ class State {
         this.playerObject = undefined;
 
         this.restartButton = undefined;
-        this.camera = new Camera();        
+        this.camera = new Camera();      
     }
 
     init() {
         this.initLayers();
+        this.setupText();
         this.setupPayingField();
         this.moveOverlay.init();
         this.attackOverlay.init();
@@ -49,6 +50,23 @@ class State {
         this.initUi();
         this.moveToState(GameStates.Play);
         onResizeWindow();
+    }
+
+    setupText() {
+        var style = new PIXI.TextStyle({
+            fontSize: 36,
+            fontWeight: 'bold',
+            stroke: '#ffffff',
+            strokeThickness: 5,
+        });
+        this.text = new PIXI.Text('TESETETSTSET', style);
+        this.text.x = 0;
+        this.text.y = 0;
+        this.text.anchor.set(0.5);
+        this.text.parentGroup = this.layerUi;
+        this.text.y = -this.camera.targetScreenSize / 2.0 + 100;
+        this.text.x = this.camera.targetScreenSize / 2.0 - 50;
+        app.stage.addChild(this.text);
     }
 
     setupObjects() {
@@ -158,14 +176,19 @@ class State {
 
         switch(this.state) {
             case GameStates.Play:
+            this.text.text = "Player's turn";
             this.selectedCell = this.playerObject.currentCell;
             break;
             case GameStates.AiTurn:
+            this.text.text = "Enemy's turn";
             this.moveToNextState();
             break;
 
             case GameStates.Win:
+            this.text.text = "You have won!";
+            break;
             case GameStates.Gameover:
+            this.text.text = "Game over!\nPress restart button";
             break;
         }
     }
