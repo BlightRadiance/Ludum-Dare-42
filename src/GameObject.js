@@ -18,6 +18,7 @@ class GameObject {
         this.currentCell = undefined;
 
         this.falling = false;
+        this.dead = false;
         this.fallV = 0.0;
         this.fallA = 1000.0;
         this.fallingTime = 0.0;
@@ -62,12 +63,13 @@ class GameObject {
             if (this.fallingTime > this.fallingTimeMax) {
                 state.onGameObjectDropped(this);
                 this.falling = false;
+                this.dead = true;
             }
         }
     }
 
     isMovePossible() {
-        return this.currentCell.state == CellState.Ok && !this.falling;
+        return this.currentCell.state == CellState.Ok && !this.falling && !this.dead;
     }
 
     onAiMove() {

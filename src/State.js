@@ -344,6 +344,8 @@ class State {
                     if (newCell && newCell.state == CellState.Ok) {
                         if (!newCell.layers[2]) {
                             cell.layers[2].setCell(newRow, newColumn);
+                        } else {
+                            this.splash(dirX, dirY, newCell);
                         }
                     } else {
                         var layers = this.stage.getLayers(newRow, newColumn);
