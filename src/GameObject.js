@@ -185,19 +185,17 @@ class GameObject {
             this.moveOverlay.drawOverlay(this.currentCell, this.attackMovePatten, Action.None);
             // Can attack player
             var targetCell = playerCell;
-            if (Math.random() < 0.9) {
-                var dirX = getRandDir();
-                var dirY = getRandDir();
-                if (Math.random() < 0.8) {
-                    dirX += getRandDir();
-                    dirY += getRandDir();
-                }
-                if (Math.random() < 0.5) {
-                    dirX += getRandDir();
-                    dirY += getRandDir();
-                }
-                targetCell = state.stage.getCell(playerCell.row + dirY, playerCell.column + dirX);
+            var dirX = getRandDir();
+            var dirY = getRandDir();
+            if (Math.random() < 0.8) {
+                dirX += getRandDir();
+                dirY += getRandDir();
             }
+            if (Math.random() < 0.5) {
+                dirX += getRandDir();
+                dirY += getRandDir();
+            }
+            targetCell = state.stage.getCell(playerCell.row + dirY, playerCell.column + dirX);
             this.attackOverlay.drawOverlay(targetCell, this.attackPatten, Action.Fire)
             this.delayedFinishAiTurn(() => {
                 self.attackOverlay.apply(targetCell, targetCell, self.attackPatten, Action.Artillery);
