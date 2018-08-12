@@ -68,34 +68,54 @@ class State {
 
     initUi() {
         var self = this;
-        var action1Sprite = PIXI.Sprite.fromImage('overlay_base')
-        action1Sprite.anchor.set(0.5);
-        app.stage.addChild(action1Sprite);
-        action1Sprite.interactive = true;
-        action1Sprite.x = this.camera.targetScreenSize / 2.0 - action1Sprite.width / 2.0;
-        action1Sprite.y = this.camera.targetScreenSize / 2.0 - action1Sprite.height / 2.0;
-        action1Sprite.on('pointerup', () => {
+        this.jumpButton = PIXI.Sprite.fromImage('button_jump')
+        this.jumpButton.anchor.set(0.5);
+        app.stage.addChild(this.jumpButton);
+        this.jumpButton.interactive = true;
+        this.jumpButton.parentGroup =  this.layerUi;
+        this.jumpButton.x = this.camera.targetScreenSize / 2.0 - this.jumpButton.width / 2.0;
+        this.jumpButton.y = this.camera.targetScreenSize / 2.0 - this.jumpButton.height / 2.0;
+        this.jumpButton.on('pointerup', () => {
             self.onAction(Action.Jump);
         });
 
-        var action2Sprite = PIXI.Sprite.fromImage('overlay_base')
-        action2Sprite.anchor.set(0.5);
-        app.stage.addChild(action2Sprite);
-        action2Sprite.interactive = true;
-        action2Sprite.x = -this.camera.targetScreenSize / 2.0 + action1Sprite.width / 2.0;
-        action2Sprite.y = this.camera.targetScreenSize / 2.0 - action1Sprite.height / 2.0;
-        action2Sprite.on('pointerup', () => {
+        this.fireButton = PIXI.Sprite.fromImage('button_fire')
+        this.fireButton.anchor.set(0.5);
+        app.stage.addChild(this.fireButton);
+        this.fireButton.interactive = true;
+        this.fireButton.parentGroup =  this.layerUi;
+        this.fireButton.x = -this.camera.targetScreenSize / 2.0 + this.jumpButton.width / 2.0;
+        this.fireButton.y = this.camera.targetScreenSize / 2.0 - this.jumpButton.height / 2.0;
+        this.fireButton.on('pointerup', () => {
             self.onAction(Action.Fire);
         });
 
-        this.restartButton = PIXI.Sprite.fromImage('overlay_base')
+        this.restartButton = PIXI.Sprite.fromImage('button_restart')
         this.restartButton.anchor.set(0.5);
         app.stage.addChild(this.restartButton);
-        this.restartButton.x = -this.camera.targetScreenSize / 2.0 + action1Sprite.width / 2.0;
-        this.restartButton.y = -this.camera.targetScreenSize / 2.0 + action1Sprite.height / 2.0;
+        this.restartButton.x = -this.camera.targetScreenSize / 2.0 + this.jumpButton.width / 2.0;
+        this.restartButton.y = -this.camera.targetScreenSize / 2.0 + this.jumpButton.height / 2.0;
         this.restartButton.interactive = true;
         this.restartButton.parentGroup =  this.layerUi;
         this.restartButton.on('pointerup', () => {
+            if (this.state == GameStates.Win) {
+                this.currentLevel += 1;
+                self.moveToNextState();
+            } else {
+                self.moveToState(GameStates.Gameover);
+                self.moveToNextState();
+            }
+        });
+
+        this.nextButton = PIXI.Sprite.fromImage('button_next')
+        this.nextButton.anchor.set(0.5);
+        app.stage.addChild(this.nextButton);
+        this.nextButton.x = -this.camera.targetScreenSize / 2.0 + this.jumpButton.width / 2.0;
+        this.nextButton.y = -this.camera.targetScreenSize / 2.0 + this.jumpButton.height / 2.0;
+        this.nextButton.interactive = false;
+        this.nextButton.visible = false;
+        this.nextButton.parentGroup =  this.layerUi;
+        this.nextButton.on('pointerup', () => {
             if (this.state == GameStates.Win) {
                 this.currentLevel += 1;
                 self.moveToNextState();
@@ -163,8 +183,18 @@ class State {
                 this.attackOverlay.hideOverlay();
                 this.actionMode = Action.None;
                 this.selectedCell = undefined;
+                this.fireButton.interactive = false;
+                this.fireButton.visible = false;
+                this.jumpButton.interactive = false;
+                this.jumpButton.visible = false;
             break;
             case GameStates.Win:
+                this.restartButton.interactive = true;
+                this.restartButton.visible = true;
+                this.nextButton.interactive = false;
+                this.nextButton.visible = false;
+                this.reinit();
+            break;
             case GameStates.Gameover:
                 this.reinit();
             break;
@@ -174,6 +204,10 @@ class State {
             case GameStates.Play:
                 this.text.text = "Player's turn";
                 this.selectedCell = this.level.playerObject.currentCell;
+                this.fireButton.interactive = true;
+                this.fireButton.visible = true;
+                this.jumpButton.interactive = true;
+                this.jumpButton.visible = true;
             break;
             case GameStates.AiTurn:
                 this.aiTurnsLeft = this.level.enemyCount;
@@ -183,6 +217,10 @@ class State {
             break;
 
             case GameStates.Win:
+                this.nextButton.interactive = true;
+                this.nextButton.visible = true;
+                this.restartButton.interactive = false;
+                this.restartButton.visible = false;
                 this.text.text = "You have won!";
             break;
             case GameStates.Gameover:

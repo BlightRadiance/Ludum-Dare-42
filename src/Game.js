@@ -43,6 +43,12 @@ class Game extends DragonBonesBase {
         PIXI.loader.add('overlay_l', "resource/overlay_l.png");
         PIXI.loader.add('overlay_r', "resource/overlay_r.png");
         PIXI.loader.add('overlay_u', "resource/overlay_u.png");
+        PIXI.loader.add('button_cancel', "resource/button_cancel.png");
+        PIXI.loader.add('button_fire', "resource/button_fire.png");
+        PIXI.loader.add('button_help', "resource/button_help.png");
+        PIXI.loader.add('button_jump', "resource/button_jump.png");
+        PIXI.loader.add('button_next', "resource/button_next.png");
+        PIXI.loader.add('button_restart', "resource/button_restart.png");
     }
 
     resize() {
