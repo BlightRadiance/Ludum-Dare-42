@@ -1,6 +1,6 @@
 /// <reference path="../libs/dragonBones/dragonBones.d.ts" />
 
-let app = new PIXI.Application(1920, 1080, { antialias: true, backgroundColor: "0xFFFFFF" })
+let app = new PIXI.Application(1920, 1080, { antialias: true, backgroundColor: "0xCCCCCC" })
 var time = 0;
 var state = new State();
 var game = new Game();

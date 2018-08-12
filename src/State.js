@@ -101,7 +101,7 @@ class State {
         this.restartButton = PIXI.Sprite.fromImage('button_restart')
         this.restartButton.anchor.set(0.5);
         app.stage.addChild(this.restartButton);
-        this.restartButton.x = -this.camera.targetScreenSize / 2.0 + this.jumpButton.width / 2.0;
+        this.restartButton.x = -this.camera.targetScreenSize / 2.0 + this.jumpButton.width / 1.5;
         this.restartButton.buttonMode = true;
         this.restartButton.y = -this.camera.targetScreenSize / 2.0 + this.jumpButton.height / 2.0;
         this.restartButton.interactive = true;
