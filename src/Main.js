@@ -27,3 +27,7 @@ function onResizeWindow() {
 function getRandDir() {
     return Math.floor(Math.random() * 3) + -1;
 }
+
+function getRandBetween(end) {
+    return Math.floor(Math.random() * (end + 1));
+}

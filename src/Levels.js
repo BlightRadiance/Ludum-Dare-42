@@ -16,6 +16,7 @@ class Level {
         this.setupAi(5, 7, AiType.Rush);
         this.setupAi(6, 5, AiType.Rush);
         this.setupAi(7, 5, AiType.Rush);*/
+        this.remomoveRandomCells(10);
     }
 
     setupPlayer(row, column) {
@@ -40,5 +41,17 @@ class Level {
 
     setupRadndom() {
 
+    }
+
+    remomoveRandomCells(count) {
+        while(count >= 0) {
+            var x = getRandBetween(state.stage.cellsColumnsCount);
+            var y = getRandBetween(state.stage.cellsRowsCount);
+            var cell = state.stage.getCell(y, x);
+            if (cell && !cell.layers[2]) {
+                cell.state = CellState.Falling;
+            }
+            count -= 1;
+        }
     }
 }

@@ -187,6 +187,10 @@ class GameObject {
             if (Math.random() < 0.7) {
                 var dirX = getRandDir();
                 var dirY = getRandDir();
+                if (Math.random() < 0.7) {
+                    dirX += getRandDir();
+                    dirY += getRandDir();
+                }
                 targetCell = state.stage.getCell(playerCell.row + dirY, playerCell.column + dirX);
             }
             this.attackOverlay.drawOverlay(targetCell, this.attackPatten, Action.Fire)
