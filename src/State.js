@@ -62,10 +62,10 @@ class State {
         this.text = new PIXI.Text('TESETETSTSET', style);
         this.text.x = 0;
         this.text.y = 0;
-        this.text.anchor.set(0.5);
+        this.text.anchor.set(0);
         this.text.parentGroup = this.layerUi;
-        this.text.y = -this.camera.targetScreenSize / 2.0 + 100;
-        this.text.x = this.camera.targetScreenSize / 2.0 - 50;
+        this.text.y = -this.camera.targetScreenSize / 2.0 + 50;
+        this.text.x = this.camera.targetScreenSize / 2.0 - 350;
         app.stage.addChild(this.text);
     }
 
