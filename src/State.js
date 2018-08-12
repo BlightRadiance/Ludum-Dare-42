@@ -136,6 +136,7 @@ class State {
     }
 
     moveToState(state) {
+        console.log("Move to state: " + state);
         var oldState = this.state;
         this.state = state;
         switch(oldState) {
@@ -215,6 +216,7 @@ class State {
         if (cell && cell.layers[2]) {
             console.log("Drop: " + cell.layers[2]);
             cell.layers[2].unmanage(true);
+            
         }
     }
 
@@ -227,10 +229,7 @@ class State {
             case Action.Jump:
                 // Try to apply attack pattern
                 if (this.moveOverlay.isWithin(this.currentCell, this.selectedCell, this.attackMovePattern)) {
-                    var success = this.attackOverlay.apply(cell, cell, this.movePattern, this.actionMode);
-                    if (success) {
-                        this.moveToNextState();
-                    }
+                    this.attackOverlay.apply(cell, cell, this.movePattern, this.actionMode);
                 }
             break;
         }
@@ -242,10 +241,7 @@ class State {
     tryToMove(/** @type {Cell} */ cell) {
         if (!cell.layers[2]) {
             // Try to apply move pattern
-            var success = this.moveOverlay.apply(this.selectedCell, cell, this.movePattern, this.actionMode);
-            if (success) {
-                this.moveToNextState();
-            }
+            this.moveOverlay.apply(this.selectedCell, cell, this.movePattern, this.actionMode);
         }
     }
 
