@@ -66,14 +66,22 @@ class GameObject {
         }
     }
 
+    isMovePossible() {
+        return this.currentCell.state == CellState.Ok && !this.falling;
+    }
+
     onAiMove() {
         console.log("On AI move");
-        var self = this;
-        this.showAiOverlay();
-        switch (this.aiType) {
-            case AiType.Rush:
-                this.rush();
-            break;
+        if (!this.isMovePossible()) {
+            state.onAiMoveFinished();
+        } else {
+            var self = this;
+            this.showAiOverlay();
+            switch (this.aiType) {
+                case AiType.Rush:
+                    this.rush();
+                break;
+            }
         }
     }
 
@@ -114,26 +122,52 @@ class GameObject {
                 }
             });
         } else {
-            // Try to move to player's cell
-            var dirX = playerCell.column - this.currentCell.column;
-            var dirY = playerCell.row - this.currentCell.row;
-            if (dirX != 0) {
-                dirX /= Math.abs(dirX);
-            }
-            if (dirY != 0) {
-                dirY /= Math.abs(dirY);
-            }
-            var targetCell = state.stage.getCell(this.currentCell.row + dirY, this.currentCell.column + dirX);
-            if (targetCell && this.moveOverlay.isWithin(targetCell, this.currentCell, this.movePattern)
-                && targetCell.state == CellState.Ok) {
-                // Can move in player's direction
+            // Try path finding
+            var grid = state.stage.getPathfindingGrid();
+            var path = pathFinder.findPath(this.currentCell.column, this.currentCell.row, playerCell.column, playerCell.row, grid);
+            if (path.length != 0) {
                 this.delayedFinishAiTurn(() => {
-                    if (!self.moveOverlay.apply(self.currentCell, targetCell, self.movePattern, Action.None)) {
+                    var targetCell = state.stage.getCell(path[1][1], path[1][0]);
+                    if (this.canGoTo(targetCell) && !self.moveOverlay.apply(self.currentCell, targetCell, self.movePattern, Action.None)) {
                         console.log("Unexpected: Ai tried to move to row: " + (self.currentCell.column + dirY) + "; column: " + (self.currentCell.row + dirX) + ". And failed!");
                     }
                 });
+            } else {
+                // Try to find any random possible movement option
+                console.log("There is no path to player")
+                var maxRandomPickCount = 20;
+                var currentPick = 0;
+                var exitFound = false;
+                while (currentPick < maxRandomPickCount) {
+                    var dirX = getRandDir();
+                    var dirY = getRandDir();
+                    var targetCell = state.stage.getCell(this.currentCell.row + dirY, this.currentCell.column + dirX);
+                    if (this.canGoTo(targetCell)) {
+                        exitFound = true;
+                        this.delayedFinishAiTurn(() => {
+                            if (!self.moveOverlay.apply(self.currentCell, targetCell, self.movePattern, Action.None)) {
+                                console.log("Unexpected: Ai tried to move to row: " + (self.currentCell.column + dirY) + "; column: " + (self.currentCell.row + dirX) + ". And failed!");
+                            }
+                        });
+                    }
+                    if (exitFound) {
+                        break;
+                    }
+                    currentPick += 1;
+                }
+                if (!exitFound) {
+                    // Self distruct
+                    this.delayedFinishAiTurn(() => {
+                        this.currentCell.state = CellState.Falling;
+                    });
+                }
             }
         }
+    }
+
+    canGoTo(targetCell) {
+        return targetCell && this.moveOverlay.isWithin(targetCell, this.currentCell, this.movePattern)
+                && targetCell.state == CellState.Ok;
     }
 
     hideAiOverlay() {

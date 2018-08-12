@@ -4,6 +4,9 @@ let app = new PIXI.Application(1920, 1080, { antialias: true, backgroundColor: "
 var time = 0;
 var state = new State();
 var game = new Game();
+var pathFinder = new PF.AStarFinder({
+    allowDiagonal: true
+});
 
 window.onload = function () {
     document.body.appendChild(app.renderer.view);

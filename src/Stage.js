@@ -51,10 +51,24 @@ class Stage {
         }
     }
 
+    getPathfindingGrid() {
+        var grid = new PF.Grid(this.cellsColumnsCount, this.cellsRowsCount);
+        for (var row = 0; row < this.cellsRowsCount; ++row) {
+            for (var column = 0; column < this.cellsColumnsCount; ++column) {
+                var index = this.getIndex(row, column);
+                var cell = this.cells[index];
+                if (cell.state != CellState.Ok) {
+                    grid.setWalkableAt(column, row, false);
+                }
+            }
+        }
+        return grid;
+    }
+
     getLayers(row, column) {
         return this.lrs[this.cellsRowsCount + this.cellsColumnsCount + row - column];
     }
-    
+
     clearLayer(layer) {
         for (var i = 0; i < this.cells.length; ++i) {
             this.cells[i].layers[layer] = undefined;
