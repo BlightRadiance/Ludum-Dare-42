@@ -184,6 +184,7 @@ class State {
             var obj = this.level.gameObjects[i];
             if (obj.type == GameObjectType.AI) {
                 obj.onAiMove();
+                this.lastSelectedAi = obj;
                 this.currentEnemyObjectIndex = i;
             }
         }
@@ -295,6 +296,10 @@ class State {
                 this.jump(cell);
             } else if (action == Action.Fire) {
                 this.fire(cell);
+            }
+        } else if (this.state == GameStates.AiTurn) {
+            if (command == 1) {
+                this.lastSelectedAi.currentCell.layers[2].setCell(cell.row, cell.column);
             }
         } else {
             console.log("Player not selected -> unexpected")

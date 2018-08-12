@@ -20,3 +20,7 @@ function onResizeWindow() {
     app.renderer.resize(window.innerWidth, window.innerHeight);
     game.resize();
 }
+
+function getRandDir() {
+    return Math.floor(Math.random() * 3) + -1;
+}
