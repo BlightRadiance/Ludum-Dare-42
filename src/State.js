@@ -51,18 +51,19 @@ class State {
 
     setupText() {
         var style = new PIXI.TextStyle({
-            fontSize: 30,
+            fontSize: 50,
             fontWeight: 'bold',
-            stroke: '#ffffff',
-            strokeThickness: 5,
+            stroke: '#AAAAAA',
+            strokeThickness: 2,
+            align: 'center',
         });
         this.text = new PIXI.Text('TESETETSTSET', style);
         this.text.x = 0;
         this.text.y = 0;
         this.text.anchor.set(0);
         this.text.parentGroup = this.layerUi;
-        this.text.y = -this.camera.targetScreenSize / 2.0 + 50;
-        this.text.x = this.camera.targetScreenSize / 2.0 - 300;
+        this.text.y = -this.camera.targetScreenSize / 2.0 + 90;
+        this.text.x = this.camera.targetScreenSize / 2.0 - 350;
         app.stage.addChild(this.text);
     }
 
@@ -77,6 +78,7 @@ class State {
         this.jumpButton.anchor.set(0.5);
         app.stage.addChild(this.jumpButton);
         this.jumpButton.interactive = true;
+        this.jumpButton.buttonMode = true;
         this.jumpButton.parentGroup =  this.layerUi;
         this.jumpButton.x = this.camera.targetScreenSize / 2.0 - this.jumpButton.width / 2.0;
         this.jumpButton.y = this.camera.targetScreenSize / 2.0 - this.jumpButton.height / 2.0;
@@ -89,6 +91,7 @@ class State {
         app.stage.addChild(this.fireButton);
         this.fireButton.interactive = true;
         this.fireButton.parentGroup =  this.layerUi;
+        this.fireButton.buttonMode = true;
         this.fireButton.x = -this.camera.targetScreenSize / 2.0 + this.jumpButton.width / 2.0;
         this.fireButton.y = this.camera.targetScreenSize / 2.0 - this.jumpButton.height / 2.0;
         this.fireButton.on('pointerup', () => {
@@ -99,6 +102,7 @@ class State {
         this.restartButton.anchor.set(0.5);
         app.stage.addChild(this.restartButton);
         this.restartButton.x = -this.camera.targetScreenSize / 2.0 + this.jumpButton.width / 2.0;
+        this.restartButton.buttonMode = true;
         this.restartButton.y = -this.camera.targetScreenSize / 2.0 + this.jumpButton.height / 2.0;
         this.restartButton.interactive = true;
         this.restartButton.parentGroup =  this.layerUi;
@@ -117,6 +121,7 @@ class State {
         app.stage.addChild(this.nextButton);
         this.nextButton.x = -this.camera.targetScreenSize / 2.0 + this.jumpButton.width / 2.0;
         this.nextButton.y = -this.camera.targetScreenSize / 2.0 + this.jumpButton.height / 2.0;
+        this.nextButton.buttonMode = true;
         this.nextButton.interactive = false;
         this.nextButton.visible = false;
         this.nextButton.parentGroup =  this.layerUi;
@@ -243,7 +248,7 @@ class State {
                 this.text.text = "You have won!";
             break;
             case GameStates.Gameover:
-                this.text.text = "Game over!\nPress restart button";
+                this.text.text = "Game over!";
             break;
         }
     }
