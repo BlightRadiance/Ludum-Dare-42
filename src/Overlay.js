@@ -36,11 +36,11 @@ var jumpMovePattern = [
     [1, 1, 1, 1, 1],
 ];
 var attackMovePattern = [
-    [0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0],
-    [1, 1, -1, 1, 1],
-    [0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0],
+    [0, 0, 4, 0, 0],
+    [0, 0, 4, 0, 0],
+    [3, 3, -1, 5, 5],
+    [0, 0, 6, 0, 0],
+    [0, 0, 6, 0, 0],
 ];
 
 // Rush Ai
@@ -110,12 +110,14 @@ class Overlay {
                     case -1:
                     sprite = PIXI.Sprite.fromImage('overlay_base')
                     sprite.anchor.set(0.5);
+                    targetLayer = 1;
                     break;
                     case 0:
                     break;
                     case 1:
                     sprite = PIXI.Sprite.fromImage('overlay_base')
                     sprite.anchor.set(0.5);
+                    targetLayer = 1;
                     break;
                     case 3:
                     sprite = PIXI.Sprite.fromImage('overlay_r')
