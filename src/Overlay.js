@@ -102,6 +102,7 @@ class Overlay {
         }
 
         // Draw
+        var targetLayer = 1;
         for(var patternRow = 0; patternRow < pattern.length; ++patternRow) {
             for(var patternColumn = 0; patternColumn < pattern.length; ++patternColumn) {
                 var sprite = undefined;
@@ -115,6 +116,26 @@ class Overlay {
                     case 1:
                     sprite = PIXI.Sprite.fromImage('overlay_base')
                     sprite.anchor.set(0.5);
+                    break;
+                    case 3:
+                    sprite = PIXI.Sprite.fromImage('overlay_r')
+                    sprite.anchor.set(0.5);
+                    targetLayer = 3;
+                    break;
+                    case 4:
+                    sprite = PIXI.Sprite.fromImage('overlay_u')
+                    sprite.anchor.set(0.5);
+                    targetLayer = 3;
+                    break;
+                    case 5:
+                    sprite = PIXI.Sprite.fromImage('overlay_l')
+                    sprite.anchor.set(0.5);
+                    targetLayer = 3;
+                    break;
+                    case 6:
+                    sprite = PIXI.Sprite.fromImage('overlay_d')
+                    sprite.anchor.set(0.5);
+                    targetLayer = 3;
                     break;
                     default:
                     sprite = PIXI.Sprite.fromImage('overlay_attack')
@@ -134,7 +155,7 @@ class Overlay {
                             }
                             app.stage.addChild(sprite);
                             this.sprites.push(sprite);
-                            cell.show(sprite, 1);
+                            cell.show(sprite, targetLayer);
                         }
                     }
                 }

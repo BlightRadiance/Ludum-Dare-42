@@ -5,13 +5,13 @@ class LayerGroup {
         this.layerStage = new PIXI.display.Group(base, false);
         app.stage.addChild(new PIXI.display.Layer(this.layerStage));
 
-        this.layerPlayer = new PIXI.display.Group(base + 3, false);
+        this.layerPlayer = new PIXI.display.Group(base + 2, false);
         app.stage.addChild(new PIXI.display.Layer(this.layerPlayer));
 
-        this.layerOverlay = new PIXI.display.Group(base + 1, false);
+        this.layerOverlay = new PIXI.display.Group(base + 3, false);
         app.stage.addChild(new PIXI.display.Layer(this.layerOverlay));
 
-        this.layerHelp = new PIXI.display.Group(base + 2, false);
+        this.layerHelp = new PIXI.display.Group(base + 1, false);
         app.stage.addChild(new PIXI.display.Layer(this.layerHelp));
     }
 }

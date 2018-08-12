@@ -39,6 +39,10 @@ class Game extends DragonBonesBase {
         PIXI.loader.add('player', "resource/player.png");
         PIXI.loader.add('overlay_base', "resource/overlay_base.png");
         PIXI.loader.add('overlay_attack', "resource/overlay_attack.png");
+        PIXI.loader.add('overlay_d', "resource/overlay_d.png");
+        PIXI.loader.add('overlay_l', "resource/overlay_l.png");
+        PIXI.loader.add('overlay_r', "resource/overlay_r.png");
+        PIXI.loader.add('overlay_u', "resource/overlay_u.png");
     }
 
     resize() {
