@@ -168,13 +168,10 @@ class State {
                 this.selectedCell = this.level.playerObject.currentCell;
             break;
             case GameStates.AiTurn:
+                this.aiTurnsLeft = this.level.enemyCount;
+                this.currentEnemyObjectIndex = 0;
                 this.text.text = "Enemy's turn";
-                this.level.gameObjects.forEach(o => {
-                    if (o.type == GameObjectType.AI) {
-                        o.onAiMove();
-                    }
-                });
-                this.moveToNextState();
+                this.doAiMove();
             break;
 
             case GameStates.Win:
@@ -183,6 +180,28 @@ class State {
             case GameStates.Gameover:
                 this.text.text = "Game over!\nPress restart button";
             break;
+        }
+    }
+
+    doAiMove() {
+        for (var i = this.currentEnemyObjectIndex + 1; i < this.level.gameObjects.length; ++i) {
+            var obj = this.level.gameObjects[i];
+            if (obj.type == GameObjectType.AI) {
+                obj.onAiMove();
+                this.currentEnemyObjectIndex = i;
+            }
+        }
+    }
+
+    onAiMoveFinished() {
+        this.aiTurnsLeft -= 1;
+        if (this.aiTurnsLeft <= 0) {
+            // Player might lose already
+            if (this.state == GameStates .AiTurn) {
+                this.moveToNextState();
+            }
+        } else {
+            this.doAiMove();
         }
     }
 

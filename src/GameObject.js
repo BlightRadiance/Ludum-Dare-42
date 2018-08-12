@@ -62,5 +62,9 @@ class GameObject {
 
     onAiMove() {
         console.log("On AI move");
+        var self = this;
+        setTimeout(() => {
+            state.onAiMoveFinished();
+        }, 1000 / state.level.enemyCount);
     }
 }
