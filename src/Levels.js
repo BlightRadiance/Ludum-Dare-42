@@ -54,7 +54,7 @@ class Level {
             this.setupRadndom();
             break;
         }
-        this.remomoveRandomCells(state.stage.cellsColumnsCount * state.stage.cellsColumnsCount * 0.5 * Math.random());
+        this.remomoveRandomCells(state.stage.cellsColumnsCount * state.stage.cellsColumnsCount * 0.7 * Math.random());
     }
 
     setupPlayer(row, column) {
