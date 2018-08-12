@@ -5,6 +5,7 @@ var OverlayType = Object.freeze({
 })
 
 /*
+-2 - center of action and danger
 -1 - center of action
  1 - movable
  2 - attack
@@ -70,7 +71,7 @@ var rangeAiAttackMovePattern = [
 ];
 var rangeAiAttackPattern = [
     [0, 4, 0],
-    [3, -1, 5],
+    [3, -2, 5],
     [0, 6, 0],
 ];
 
@@ -90,7 +91,7 @@ class Overlay {
         var centerY = 0;
         for (var patternRow = 0; patternRow < pattern.length; ++patternRow) {
             for (var patternColumn = 0; patternColumn < pattern.length; ++patternColumn) {
-                if (pattern[patternRow][patternColumn] == -1) {
+                if (pattern[patternRow][patternColumn] < 0) {
                     centerX = patternRow;
                     centerY = patternColumn;
                     break;
@@ -184,7 +185,7 @@ class Overlay {
         var centerY = 0;
         for (var patternRow = 0; patternRow < pattern.length; ++patternRow) {
             for (var patternColumn = 0; patternColumn < pattern.length; ++patternColumn) {
-                if (pattern[patternRow][patternColumn] == -1) {
+                if (pattern[patternRow][patternColumn] < 0) {
                     centerX = patternRow;
                     centerY = patternColumn;
                     break;
@@ -229,7 +230,7 @@ class Overlay {
         var centerY = 0;
         for (var patternRow = 0; patternRow < pattern.length; ++patternRow) {
             for (var patternColumn = 0; patternColumn < pattern.length; ++patternColumn) {
-                if (pattern[patternRow][patternColumn] == -1) {
+                if (pattern[patternRow][patternColumn] < 0) {
                     centerX = patternRow;
                     centerY = patternColumn;
                     break;

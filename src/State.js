@@ -112,7 +112,7 @@ class State {
                 self.moveToNextState();
             } else {
                 self.moveToState(GameStates.Gameover);
-                self.moveToNextState();
+                self.moveToState(GameStates.Play);
             }
         });
 

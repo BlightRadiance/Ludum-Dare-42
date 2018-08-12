@@ -102,7 +102,33 @@ class Level {
     }
 
     setupRadndom() {
+        state.stage.setupPayingField(3 + getRandBetween(5), 3 + getRandBetween(5));
+        var w = state.stage.cellsColumnsCount;
+        var h = state.stage.cellsRowsCount;
 
+        this.setupPlayer(getRandBetween(h - 1), getRandBetween(w - 1));
+        var howManyRushesToSpawn = Math.floor(w / 4.0) + getRandBetween(Math.floor(w / 4.0));
+        var howManyRangesToSpawn = Math.floor(h / 8.0) + getRandBetween(Math.floor(h / 4.0));
+
+        while (howManyRangesToSpawn >= 0) {
+            var y = getRandBetween(h);
+            var x = getRandBetween(w);
+            var cell = state.stage.getCell(y, x);
+            if (cell && !cell.layers[2]) {
+                this.setupAi(y, x, AiType.Range);
+                howManyRangesToSpawn -= 1;
+            }
+        }
+
+        while (howManyRushesToSpawn >= 0) {
+            var y = getRandBetween(h);
+            var x = getRandBetween(w);
+            var cell = state.stage.getCell(y, x);
+            if (cell && !cell.layers[2]) {
+                this.setupAi(y, x, AiType.Rush);
+                howManyRushesToSpawn -= 1;
+            }
+        }
     }
 
     remomoveRandomCells(count) {
