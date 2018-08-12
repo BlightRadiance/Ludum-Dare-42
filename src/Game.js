@@ -20,14 +20,14 @@ class Game extends DragonBonesBase {
         this.preloadOtherResources();
 
         this.ceterText = new PIXI.Text('Loading');
-        this.ceterText.x = 0;
-        this.ceterText.y = 0;
+        this.ceterText.x = window.innerWidth / 2.0;
+        this.ceterText.y = window.innerHeight / 2.0;
         this.ceterText.anchor.set(0.5);
         app.stage.addChild(this.ceterText);
 
         var self = this;
         PIXI.loader.on("progress", function (loader, resource) {
-            self.ceterText.text = "Loading:" + loader.progress + "%";
+            self.ceterText.text = "Loading: " + Math.round(loader.progress) + "%";
         });
         PIXI.loader.once("complete", function (loader, resources) {
             app.stage.removeChild(self.ceterText);
