@@ -33,20 +33,19 @@ class State {
         this.mouseOverCell = undefined;
         this.selectedCell = undefined;
 
-        this.gameObjects = new Array();
-        this.playerObject = undefined;
-
         this.restartButton = undefined;
-        this.camera = new Camera();      
+        this.camera = new Camera();
+
+        this.level = new Level();
+        this.currentLevel = 0;
     }
 
     init() {
         this.initLayers();
         this.setupText();
-        this.setupPayingField();
+        this.level.setupLevel(this.currentLevel)
         this.moveOverlay.init();
         this.attackOverlay.init();
-        this.setupObjects();
         this.initUi();
         this.moveToState(GameStates.Play);
         onResizeWindow();
@@ -70,20 +69,7 @@ class State {
     }
 
     setupObjects() {
-        var playerSprite1 = PIXI.Sprite.fromImage('player')
-        playerSprite1.anchor.set(0.5, 0.7);
-        app.stage.addChild(playerSprite1);
-        var playerObject1 = new GameObject(playerSprite1, GameObjectType.Player);
-        playerObject1.setCell(0, 0);
-        this.gameObjects.push(playerObject1);
-        this.playerObject = playerObject1;
 
-        var playerSprite2 = PIXI.Sprite.fromImage('player')
-        playerSprite2.anchor.set(0.5, 0.7);
-        app.stage.addChild(playerSprite2);
-        var playerObject2 = new GameObject(playerSprite2, GameObjectType.AI);
-        playerObject2.setCell(2, 2);
-        this.gameObjects.push(playerObject2);
     }
 
     initUi() {
@@ -153,42 +139,44 @@ class State {
         }
     }
 
+    reinit() {
+        app.stage.removeChildren();
+        this.level.setupLevel(this.currentLevel);
+        this.init();
+    }
+
     moveToState(state) {
         console.log("Move to state: " + state);
         var oldState = this.state;
         this.state = state;
         switch(oldState) {
             case GameStates.Play:
-            this.moveOverlay.hideOverlay();
-            this.attackOverlay.hideOverlay();
-            this.actionMode = Action.None;
-            this.selectedCell = undefined;
+                this.moveOverlay.hideOverlay();
+                this.attackOverlay.hideOverlay();
+                this.actionMode = Action.None;
+                this.selectedCell = undefined;
             break;
             case GameStates.Win:
             case GameStates.Gameover:
-                app.stage.removeChildren();
-                this.gameObjects = new Array();
-                FieldWidth = 5 - Math.round((Math.random() * 5) / 2.0);
-                FieldHeight = 5 - Math.round((Math.random() * 5) / 2.0);
-                this.init();
+                this.reinit();
             break;
         }
 
         switch(this.state) {
             case GameStates.Play:
-            this.text.text = "Player's turn";
-            this.selectedCell = this.playerObject.currentCell;
+                this.text.text = "Player's turn";
+                this.selectedCell = this.level.playerObject.currentCell;
             break;
             case GameStates.AiTurn:
-            this.text.text = "Enemy's turn";
-            this.moveToNextState();
+                this.text.text = "Enemy's turn";
+                this.moveToNextState();
             break;
 
             case GameStates.Win:
-            this.text.text = "You have won!";
+                this.text.text = "You have won!";
             break;
             case GameStates.Gameover:
-            this.text.text = "Game over!\nPress restart button";
+                this.text.text = "Game over!\nPress restart button";
             break;
         }
     }
@@ -208,7 +196,7 @@ class State {
             || this.state == GameStates.Win) {
                 return;
         }
-        this.gameObjects.forEach(o => {
+        this.level.gameObjects.forEach(o => {
             o.update(dt);
         });
         this.stage.update(dt);
@@ -229,10 +217,6 @@ class State {
             this.moveOverlay.hideOverlay();
             this.attackOverlay.hideOverlay();
         }
-    }
-    
-    setupPayingField() {
-        this.stage.setupPayingField(FieldWidth, FieldHeight);
     }
 
     onCellDropped(/** @type {Cell} */ cell) {
