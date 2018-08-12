@@ -11,11 +11,11 @@ class Level {
         this.gameObjects = new Array();
         state.stage.setupPayingField(10, 10);
         this.setupPlayer(2, 2);
-        this.setupAi(5, 5, AiType.Rush);
-        this.setupAi(5, 6, AiType.Rush);
+        this.setupAi(5, 5, AiType.Range);
+        /*this.setupAi(5, 6, AiType.Rush);
         this.setupAi(5, 7, AiType.Rush);
         this.setupAi(6, 5, AiType.Rush);
-        this.setupAi(7, 5, AiType.Rush);
+        this.setupAi(7, 5, AiType.Rush);*/
     }
 
     setupPlayer(row, column) {

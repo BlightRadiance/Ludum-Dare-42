@@ -43,6 +43,7 @@ class GameObject {
             this.currentCell.unmanage(2);
         }
         if (remove) {
+            this.dead = true;
             app.stage.removeChild(this.graphics);
             switch (this.type) {
                 case GameObjectType.Player:
@@ -82,6 +83,8 @@ class GameObject {
             switch (this.aiType) {
                 case AiType.Rush:
                     this.rush();
+                case AiType.Range:
+                    this.range();
                 break;
             }
         }
@@ -99,13 +102,20 @@ class GameObject {
                 this.attackMovePatten = rushAiAttackMovePattern;
                 this.attackPatten = rushAiAttackPattern;
             break;
+            case AiType.Range:
+                this.movePattern = undefined;
+                this.attackMovePatten = rangeAiAttackMovePattern;
+                this.attackPatten = rangeAiAttackPattern;
+            break;
         }
         this.moveOverlay.drawOverlay(this.currentCell, this.movePattern, Action.None);
     }
 
     delayedFinishAiTurn(action) {
         setTimeout(() => {
-            action();
+            if (this.isMovePossible()) {
+                action();
+            }
             this.hideAiOverlay();
             state.onAiMoveFinished(true);
         }, 1000 / state.level.enemyCount);
@@ -164,6 +174,28 @@ class GameObject {
                     });
                 }
             }
+        }
+    }
+
+    range() {
+        var self = this;
+        var playerCell = state.level.playerObject.currentCell;
+        if (this.attackOverlay.isWithin(playerCell, this.currentCell, this.attackMovePatten)) {
+            this.moveOverlay.drawOverlay(this.currentCell, this.attackMovePatten, Action.None);
+            // Can attack player
+            var targetCell = playerCell;
+            if (Math.random() < 0.7) {
+                var dirX = getRandDir();
+                var dirY = getRandDir();
+                targetCell = state.stage.getCell(playerCell.row + dirY, playerCell.column + dirX);
+            }
+            this.attackOverlay.drawOverlay(targetCell, this.attackPatten, Action.Fire)
+            this.delayedFinishAiTurn(() => {
+                self.attackOverlay.apply(targetCell, targetCell, self.attackPatten, Action.Artillery);
+            });
+        } else {
+            this.hideAiOverlay();
+            state.onAiMoveFinished(true);
         }
     }
 

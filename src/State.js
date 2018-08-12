@@ -10,7 +10,8 @@ var GameStates = Object.freeze({
 var Action = Object.freeze({
     "None": 1,
     "Fire": 2, 
-    "Jump": 3, 
+    "Jump": 3,
+    "Artillery": 4, 
 })
 
 class State {
@@ -35,6 +36,8 @@ class State {
 
         this.level = new Level();
         this.currentLevel = 0;
+
+        this.reseting = false;
     }
 
     init() {
@@ -131,13 +134,21 @@ class State {
     }
 
     reinit() {
+        this.reseting = true;
         this.nextEnemyObjectIndex = 0;
+        this.level.gameObjects.forEach(o => {
+            o.unmanage(true);
+        });
         app.stage.removeChildren();
         this.level.setupLevel(this.currentLevel);
+        this.reseting = false;
         this.init();
     }
 
     moveToState(state) {
+        if (this.reseting) {
+            return;
+        }
         console.log("Move to state: " + state);
         var oldState = this.state;
         this.state = state;
@@ -296,7 +307,7 @@ class State {
             if (command == 1) {
                 this.selectedCell.layers[2].setCell(cell.row, cell.column);
             } else if (action == Action.Jump) {
-                this.jump(cell);
+                this.aoeSplash(cell, false);
             } else if (action == Action.Fire) {
                 this.fire(this.selectedCell, cell);
             }
@@ -306,6 +317,9 @@ class State {
                 this.lastSelectedAi.currentCell.layers[2].setCell(cell.row, cell.column);
             } else if (action == Action.Fire) {
                 this.fire(this.lastSelectedAi.currentCell, cell);
+            } else if (action == Action.Artillery) {
+                this.fire(this.lastSelectedAi.currentCell, cell);
+                this.aoeSplash(cell, true);
             }
         } else {
             console.log("Player not selected -> unexpected")
@@ -325,8 +339,10 @@ class State {
         toCell.state = CellState.Falling;
     }
 
-    jump(/** @type {Cell} */ cell) {
-        this.selectedCell.layers[2].setCell(cell.row, cell.column);
+    aoeSplash(/** @type {Cell} */ cell, isArtillery) {
+        if (!isArtillery) {
+            this.selectedCell.layers[2].setCell(cell.row, cell.column);
+        }
         this.splash(-1, 0, this.stage.getCell(cell.row, cell.column - 1));
         this.splash(1, 0, this.stage.getCell(cell.row, cell.column + 1));
         this.splash(0, 1, this.stage.getCell(cell.row + 1, cell.column));

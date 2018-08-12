@@ -58,6 +58,22 @@ var rushAiAttackPattern = [
     [2],
 ];
 
+// Range Ai
+var rangeAiAttackMovePattern = [
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, -1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+];
+var rangeAiAttackPattern = [
+    [0, 4, 0],
+    [3, -1, 5],
+    [0, 6, 0],
+];
+
 class Overlay {
     constructor(type) {
         this.type = type;
@@ -66,7 +82,7 @@ class Overlay {
 
     drawOverlay(/** @type {Cell} */ target, pattern, action) {
         this.hideOverlay();
-        if (!target) {
+        if (!target || !pattern) {
             return;
         }
         // Find center
@@ -134,7 +150,7 @@ class Overlay {
     }
 
     isWithin(/** @type {Cell} */ cell, /** @type {Cell} */ target, pattern, action) {
-        if (!target || !cell) {
+        if (!target || !cell || !pattern) {
             return;
         }
         // Find center
@@ -179,7 +195,7 @@ class Overlay {
     }
 
     apply(/** @type {Cell} */ target, click, pattern, action) {
-        if (this.sprites.length == 0 || !target) {
+        if (this.sprites.length == 0 || !target || !pattern) {
             return;
         }
         // Find center
